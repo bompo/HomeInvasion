@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="@color/background2">
+
+	<LinearLayout style="@style/TitleBar">
+		<ImageView style="@style/TitleBarLogo"
+			android:contentDescription="@string/description_logo" android:src="@drawable/title_logo" />
+
+		<View style="@style/TitleBarSpring" />
+	</LinearLayout>
+	<ScrollView android:id="@+id/ScrollView01"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<LinearLayout android:orientation="vertical"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" android:background="@color/background2"
+			android:padding="6dip">
+
+
+			<RelativeLayout android:gravity="center_vertical"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:onClick="onDebugClick">
+				<LinearLayout android:orientation="vertical"
+					android:layout_width="fill_parent" android:layout_height="wrap_content">
+					<TextView android:textSize="15sp" android:textColor="@color/title_text"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:text="Record" android:id="@+id/settingsDebugLabel"
+						android:textStyle="bold" />
+					<TextView android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:textColor="@color/title_text"
+						android:text="Record Session. Used for Debugging" />
+				</LinearLayout>
+			</RelativeLayout>
+
+			<ImageView style="@style/SettingsSeparator" />
+
+
+			<RelativeLayout android:gravity="center_vertical"
+				android:id="@+id/RelativeLayout01" android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:onClick="onParseClick">
+				<LinearLayout android:orientation="vertical"
+					android:layout_width="fill_parent" android:layout_height="wrap_content">
+					<TextView android:text="Parse List" android:textSize="15sp"
+						android:layout_width="wrap_content" android:textColor="@color/title_text"
+						android:layout_height="wrap_content" android:id="@+id/settingsParseLabel"
+						android:textStyle="bold"></TextView>
+					<TextView android:layout_height="wrap_content"
+						android:text="Parse List of recorded Locations. Used for Debugging."
+						android:textColor="@color/title_text" android:layout_width="wrap_content"></TextView>
+				</LinearLayout>
+			</RelativeLayout>
+
+			<ImageView style="@style/SettingsSeparator" />
+
+			<RelativeLayout android:gravity="center_vertical"
+				android:layout_width="fill_parent" android:layout_height="wrap_content">
+				<LinearLayout android:orientation="vertical"
+					android:layout_width="fill_parent" android:layout_height="wrap_content">
+					<TextView android:textSize="15sp" android:textColor="@color/title_text"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:text="@string/settingsAnimationLabel" android:id="@+id/settingsAnimateLabel"
+						android:textStyle="bold" />
+					<CheckBox android:id="@+id/settingsAnimation_check"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:onClick="onAnimationClick" />
+					<TextView android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:textColor="@color/title_text"
+						android:text="@string/settingsAnimationText" />
+				</LinearLayout>
+			</RelativeLayout>
+
+			<ImageView style="@style/SettingsSeparator" />
+
+			<RelativeLayout android:gravity="center_vertical"
+				android:layout_width="fill_parent" android:layout_height="wrap_content">
+				<LinearLayout android:orientation="vertical"
+					android:layout_width="fill_parent" android:layout_height="wrap_content">
+					<TextView android:textSize="15sp" android:textColor="@color/title_text"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:text="@string/settingsSatelliteLabel" android:id="@+id/settingsSatelliteLabel"
+						android:textStyle="bold" />
+					<CheckBox android:id="@+id/settingsSatellite_check"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:onClick="onSatelliteClick" />
+					<TextView android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:textColor="@color/title_text"
+						android:text="@string/settingsSatelliteText" />
+				</LinearLayout>
+			</RelativeLayout>
+
+			<ImageView style="@style/SettingsSeparator" />
+
+			<LinearLayout android:orientation="horizontal"
+				android:layout_width="wrap_content" android:layout_height="wrap_content">
+				<LinearLayout android:orientation="vertical"
+					android:layout_width="wrap_content" android:layout_height="wrap_content">
+					<TextView android:text="@string/settingsDifficultyTitle"
+						android:textSize="15sp" android:id="@+id/settingsDifficultyLabel"
+						style="@style/SettingsTitle" android:textStyle="bold"></TextView>
+					<TextView style="@style/SettingsText" android:text="@string/settingsDifficultyText"></TextView>
+					<Spinner style="@style/SettingsSpinner" android:prompt="@string/settingsSpinnerLabel"
+						android:id="@+id/settingsSpinner" android:entries="@array/settingsSpinnerValues" />
+				</LinearLayout>
+
+
+			</LinearLayout>
+
+			<ImageView style="@style/SettingsSeparator" />
+
+			<LinearLayout android:orientation="horizontal"
+				android:layout_width="wrap_content" android:layout_height="wrap_content">
+				<LinearLayout android:orientation="vertical"
+					android:layout_width="wrap_content" android:layout_height="wrap_content">
+					<TextView android:text="@string/settingsTimeTitle"
+						android:textSize="15sp" android:id="@+id/settingsDifficultyLabel"
+						style="@style/SettingsTitle" android:textStyle="bold"></TextView>
+					<TextView style="@style/SettingsText" android:text="@string/settingsTimeText"></TextView>
+
+					<Spinner style="@style/SettingsSpinner" android:prompt="@string/settingsTimeSpinnerLabel"
+						android:id="@+id/settingsTimeSpinner" android:entries="@array/settingsTimeSpinnerValues" />
+				</LinearLayout>
+			</LinearLayout>
+
+
+		</LinearLayout>
+	</ScrollView>
+
+</LinearLayout>

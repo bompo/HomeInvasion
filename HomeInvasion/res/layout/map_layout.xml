@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/home_root" android:orientation="vertical"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+	<LinearLayout style="@style/TitleBar">
+		<ImageView style="@style/TitleBarLogo"
+			android:contentDescription="@string/description_logo" android:src="@drawable/title_logo" />
+
+		<View style="@style/TitleBarSpring" />
+		<ProgressBar style="@style/TitleBarProgressIndicator"
+			android:visibility="gone" android:id="@+id/progressbar" />
+	</LinearLayout>
+
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:layout_weight="1">
+
+		<com.google.android.maps.MapView
+			android:id="@+id/map_view" android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:enabled="true"
+			android:clickable="true" android:apiKey="09_hOWEsl2Foba5vONQqGbuBgkKBBfXcTiNfnrQ" />
+		<!-- Stefans Release 09_hOWEsl2Frm_MBxnJtIzHbSWT73eJ3S4YbUbA -->
+		<!-- Stefans Dev home 09_hOWEsl2Foba5vONQqGbuBgkKBBfXcTiNfnrQ -->
+		<!-- Stefans Dev Fak Rechner 09_hOWEsl2FrxQdElx_0Jw4ZlO4GTeH1vi357Kw -->
+		<!-- Tinos Dev Key der ueberall gleich ist 0xu7QdHtWSin_dURF5B4Fga0isJ2d0X3q5TsKCg -->
+	</LinearLayout>
+
+	<LinearLayout style="@style/TitleBar">
+		<TextView style="@style/TitleBarText" android:text=""
+			android:id="@+id/tv_points" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
+		<TextView style="@style/TitleBarText" android:text=""
+			android:id="@+id/tv_time" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
+
+		<View style="@style/TitleBarSpring" />
+
+	</LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2010 Google Inc. Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/home_root" android:orientation="vertical"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@color/background2">
+
+	<LinearLayout style="@style/TitleBar">
+		<ImageView style="@style/TitleBarLogo"
+			android:contentDescription="@string/description_logo" android:src="@drawable/title_logo" />
+
+		<View style="@style/TitleBarSpring" />
+	</LinearLayout>
+	<ScrollView android:id="@+id/ScrollView01"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:background="@color/background2">
+		<LinearLayout android:orientation="vertical"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" android:background="@color/background2">
+			<LinearLayout android:orientation="horizontal"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:layout_weight="5" android:paddingTop="20dip"
+				android:paddingBottom="0dip" android:paddingRight="30dip"
+				android:background="@color/background1">
+				<Button android:id="@+id/menu_btn_gamestart" style="@style/HomeButton"
+					android:onClick="onGameStartClick" android:text="@string/btn_gameStart"
+					android:drawableTop="@drawable/menu_btn_gamestart" />
+				<Button android:id="@+id/menu_btn_instructions" style="@style/HomeButton"
+					android:onClick="onInstructionsClick" android:text="@string/btn_instructions"
+					android:drawableTop="@drawable/menu_btn_instructions" />
+
+			</LinearLayout>
+
+			<LinearLayout android:orientation="horizontal"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:layout_weight="5" android:paddingTop="0dip"
+				android:paddingBottom="30dip" android:paddingRight="30dip"
+				android:background="@color/background1">
+				<Button android:id="@+id/menu_btn_sound" style="@style/HomeButton"
+					android:onClick="onSoundClick" android:text="@string/btn_sound"
+					android:drawableTop="@drawable/menu_btn_sound_off" />
+				<Button android:id="@+id/menu_settings" style="@style/HomeButton"
+					android:onClick="onSettingsClick" android:text="@string/btn_settings"
+					android:drawableTop="@drawable/menu_btn_settings" />
+
+			</LinearLayout>
+
+
+
+
+
+			<LinearLayout android:orientation="horizontal"
+				android:layout_width="fill_parent" android:layout_height="fill_parent"
+				android:layout_weight="50" android:layout_gravity="bottom" android:paddingTop="20dip"
+				android:background="@color/background2">
+				<ImageView style="@style/BackgroundImage"
+					android:contentDescription="@string/description_logo"
+					android:scaleType="fitXY" android:src="@drawable/background_image" />
+			</LinearLayout>
+
+		</LinearLayout>
+	</ScrollView>
+
+</LinearLayout>

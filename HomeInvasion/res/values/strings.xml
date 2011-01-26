@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="app_name">HomeInvasion</string>
+<string name="btn_settings">Settings</string>
+<string name="btn_gameStart">Play</string>
+<string name="btn_instructions">Instructions</string>
+<string name="description_logo">PacMap</string>
+<string name="description_background">background</string>
+<string name="btn_newGame">New Game</string>
+<string name="btn_menu">Back to Menu</string>
+
+<string name="settingsTimeTitle">Time Limit</string>
+<string name="settingsDifficultyTitle">Difficulty</string>
+<string name="settingsSpinnerLabel">Difficulty</string>
+<string name="settingsTimeSpinnerLabel">Time limit</string>
+<string name="settingsAnimationLabel">Animation</string>
+<string name="settingsTimeText">Adjust time limit.  More time means also more targets.</string>
+<string name="settingsDifficultyText">Adjust difficulty. Higher difficulty means faster tanks.</string>
+<string name="settingsAnimationText">Toggle animations. Enabled animation drains battery.</string>
+<string name="btn_sound">Sound is off</string>
+<string name="btn_sound_on">Sound is on</string>
+<string name="settingsSatelliteText">Toggle satellite and normal maps view. Satellite view increases data usage.</string>
+<string name="settingsSatelliteLabel">Satellite map</string>
+</resources>
