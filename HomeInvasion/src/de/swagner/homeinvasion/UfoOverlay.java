@@ -33,14 +33,15 @@ public class UfoOverlay extends Overlay {
 	private Bitmap bmp_ufo_shadow_f6;
 	private Bitmap bmp_ufo_shadow_current;
 	
-	Bitmap resizedBitmap;
+	private Bitmap resizedBitmap;
 	
 	private int currentFrame;
-	private Location distanceFrom;
-	private Location distanceTo;
-	private float currentSpeed;
 	private double animPlayerLocationCounter;
 	private double animPlayerDirectionCounter;
+	
+	private Matrix matrix;
+	private Point point;
+	private Projection projection;
 
 	public UfoOverlay(Context context) {
 		m_context = context;
@@ -51,36 +52,32 @@ public class UfoOverlay extends Overlay {
 		bmp_ufo_f5 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_f5);
 		bmp_ufo_f6 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_f6);		
 		bmp_ufo_current = bmp_ufo_f1;
-		
+
 		bmp_ufo_shadow_f1 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f1);
 		bmp_ufo_shadow_f2 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f2);
 		bmp_ufo_shadow_f3 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f3);
 		bmp_ufo_shadow_f4 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f4);
 		bmp_ufo_shadow_f5 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f5);
-		bmp_ufo_shadow_f6 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f6);		
+		bmp_ufo_shadow_f6 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f6);
 		bmp_ufo_shadow_current = bmp_ufo_shadow_f1;
-		
+
 		currentFrame = 0;
 		animPlayerLocationCounter = 1;
-		animPlayerDirectionCounter =1;
+		animPlayerDirectionCounter = 1;
 
-		distanceFrom = new Location("distanceFrom");
-		distanceTo = new Location("distanceTo");
+		point = new Point();
 	}
 
 	@Override
 	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
 		super.draw(canvas, mapView, shadow);
-		Projection projection = mapView.getProjection();
+		projection = mapView.getProjection();
 		if (shadow == false) {
 			if (GameLogic.getInstance().getAnimPlayerLocation() != null) {
 				// Convert the location to screen pixels
-				Point point = new Point();
-				// Log.v("animPLayerLog",
-				// GameLogic.getInstance().getAnimPlayerLocation().toString());
 				projection.toPixels(GameLogic.getInstance().getAnimPlayerLocation(), point);
 
-				Matrix matrix = new Matrix();
+				matrix = new Matrix();
 				
 				//draw shadow
 				matrix.postRotate(GameLogic.getInstance().getAnimPlayerDirection(),bmp_ufo_shadow_current.getWidth() / 2,bmp_ufo_shadow_current.getHeight() / 2);
