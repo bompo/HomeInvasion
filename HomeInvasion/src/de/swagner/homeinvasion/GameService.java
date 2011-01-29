@@ -92,13 +92,13 @@ public class GameService extends Service {
 				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 10) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 100) {
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 11) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 200) {
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 12) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 300) {
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 13) {
 					sendBroadcast(addTankBroadcast);
 				}
 				try {
@@ -171,13 +171,20 @@ public class GameService extends Service {
 							tank.setCalcNewRoute(true);
 						}
 
-						double diffLat = tank.getNextRoutePosition().getLatitudeE6() - newLat;
-						double diffLog = tank.getNextRoutePosition().getLongitudeE6() - newLog;
-						double normdiffLog = (1/(Math.sqrt(Math.pow(diffLog, 2)+Math.pow(diffLat, 2))))* diffLog;
-						double normdiffLat = (1/(Math.sqrt(Math.pow(diffLog, 2)+Math.pow(diffLat, 2))))* diffLat;
+												
+//						double diffLat = tank.getOldRoutePosition().getLatitudeE6() - tank.getNextRoutePosition().getLatitudeE6();
+//						double diffLog =  tank.getOldRoutePosition().getLongitudeE6() -tank.getNextRoutePosition().getLongitudeE6() ;
+//						double normdiffLog = (1/(Math.sqrt(Math.pow(diffLog, 2)+Math.pow(diffLat, 2))))* diffLog;
+//						double normdiffLat = (1/(Math.sqrt(Math.pow(diffLog, 2)+Math.pow(diffLat, 2))))* diffLat;
+//						
+//						float newDir = (float) (Math.acos(((1 * normdiffLat)+(0*normdiffLog))/(Math.sqrt(Math.pow(1, 2)+Math.pow(0, 2))*Math.sqrt(Math.pow(normdiffLat, 2)+Math.pow(normdiffLog, 2))))*180/Math.PI);
+//						if(newDir>180) newDir = (360-newDir);
+
+						float newDir =(float) Math.atan2((tank.getOldRoutePosition().getLatitudeE6()-tank.getNextRoutePosition().getLatitudeE6()),(tank.getOldRoutePosition().getLongitudeE6()-tank.getNextRoutePosition().getLongitudeE6()));
+						newDir = (float) (270- newDir * (180/Math.PI));
+						tank.setDirection(newDir);
+						Log.d("tank dir a", "dirvek:   " + newDir);
 						
-						tank.setDirection((float) (360-Math.acos(((1 * normdiffLat)+(0*normdiffLog))/(Math.sqrt(Math.pow(1, 2)+Math.pow(0, 2))*Math.sqrt(Math.pow(normdiffLat, 2)+Math.pow(normdiffLog, 2))))*180/Math.PI));
-						Log.v("tankdir", tank.getDirection() + "");
 						tank.setPosition(newGP);
 					} catch (Exception e) {
 						Log.e("GhostAI", e.toString());

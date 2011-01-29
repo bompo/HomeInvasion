@@ -45,8 +45,8 @@ public class Tank {
 	private float direction;
 	private float animDirection;
 	private float lastDirection;
-	private boolean animateDirection;
-	
+
+	private boolean animateDirection;	
 
 
 	public static int id = 0;
@@ -97,7 +97,7 @@ public class Tank {
 	private void addTankProximityAlert() {
 		float radius = GameLogic.getInstance().getItemRadius(); // meters
 		long expiration = -1; // do not expire
-		locationManager.addProximityAlert(getPosition().getLatitudeE6() / 1E6, getPosition().getLongitudeE6() / 1E6, radius, expiration, proximityIntent);
+		locationManager.addProximityAlert(getPosition().getLatitudeE6() / 1E6, getPosition().getLongitudeE6() / 1E6, radius, 2000, proximityIntent);
 	}
 
 	public void removeTankProximityAlert() {
@@ -198,7 +198,6 @@ public class Tank {
 		
 		if (isAnimatePosition()) {
 			setAnimPosition(GameLogic.interpolatePos(getLastPosition(),getPosition(), animPositionCounter / 30.));
-			Log.v("anim", getAnimPosition().toString());
 			animPositionCounter = animPositionCounter + 1;
 			if (animPositionCounter == 30) {
 				animPositionCounter = 1;
@@ -267,5 +266,6 @@ public class Tank {
 	public void setAnimDirection(float dir) {	
 //		Log.v("animDir", dir + "");
 		animDirection = dir;
-	} 
+	}
+
 }
