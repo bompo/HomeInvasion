@@ -1,5 +1,8 @@
 package de.swagner.homeinvasion;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -34,10 +37,22 @@ public class Tank {
 	private GeoPoint nextRoutePosition;
 	private int routeCounter;
 
-	private int currentFrame = 0; 
+	// AI
+	private String pairs[];
+	private String[] lngLat;
+	private GeoPoint newGP;
+	private GeoPoint oldGP;
+	private float newDir;
+	private int newLat;
+	private int newLog;
+
+	private CopyOnWriteArrayList<GeoPoint> routeToPlayer;
+	private int currentRouteCounter;
+
+	private int currentFrame = 0;
 	private int animPositionCounter;
 	private int animDirectionCounter;
-	
+
 	private boolean animatePosition;
 	private GeoPoint lastPosition;
 	private GeoPoint animPosition;
@@ -46,8 +61,7 @@ public class Tank {
 	private float animDirection;
 	private float lastDirection;
 
-	private boolean animateDirection;	
-
+	private boolean animateDirection;
 
 	public static int id = 0;
 
@@ -75,10 +89,15 @@ public class Tank {
 
 		++id;
 		calcNewRoute = true;
-		
+
 		animPositionCounter = 1;
 		animatePosition = false;
-		animPosition=position;
+		animPosition = position;
+		currentRouteCounter = 0;
+		routeToPlayer = new CopyOnWriteArrayList<GeoPoint>();
+
+		calcNewRoute();
+
 	}
 
 	public GeoPoint getPosition() {
@@ -88,16 +107,15 @@ public class Tank {
 	public void setPosition(GeoPoint newPosition) {
 		lastPosition = this.position;
 		position = newPosition;
-//		Log.v("animpos", newPosition.toString() + " " + lastPosition.toString());
+		// Log.v("animpos", newPosition.toString() + " " +
+		// lastPosition.toString());
 		removeTankProximityAlert();
 		addTankProximityAlert();
 		setAnimatePosition(true);
 	}
 
 	private void addTankProximityAlert() {
-		float radius = GameLogic.getInstance().getItemRadius(); // meters
-		long expiration = -1; // do not expire
-		locationManager.addProximityAlert(getPosition().getLatitudeE6() / 1E6, getPosition().getLongitudeE6() / 1E6, radius, 2000, proximityIntent);
+		locationManager.addProximityAlert(getPosition().getLatitudeE6() / 1E6, getPosition().getLongitudeE6() / 1E6, GameLogic.getInstance().getItemRadius(), 2000, proximityIntent);
 	}
 
 	public void removeTankProximityAlert() {
@@ -191,20 +209,20 @@ public class Tank {
 		} else if (currentFrame == 151) {
 			bmp_tank_current = bmp_tank_f1;
 		} else if (currentFrame == 191) {
-			currentFrame = 0;	
+			currentFrame = 0;
 		}
 
 		++currentFrame;
-		
+
 		if (isAnimatePosition()) {
-			setAnimPosition(GameLogic.interpolatePos(getLastPosition(),getPosition(), animPositionCounter / 30.));
+			setAnimPosition(GameLogic.interpolatePos(getLastPosition(), getPosition(), animPositionCounter / 30.));
 			animPositionCounter = animPositionCounter + 1;
 			if (animPositionCounter == 30) {
 				animPositionCounter = 1;
 				setAnimatePosition(false);
 			}
-		}	
-		
+		}
+
 		if (isAnimateDirection()) {
 			setAnimDirection(GameLogic.interpolateDir(getLastDirection(), getDirection(), animDirectionCounter / 30.));
 			animDirectionCounter = animDirectionCounter + 1;
@@ -215,9 +233,8 @@ public class Tank {
 		}
 
 	}
-	
 
-	public boolean isAnimatePosition() { 
+	public boolean isAnimatePosition() {
 		return animatePosition;
 	}
 
@@ -232,11 +249,11 @@ public class Tank {
 	public void setAnimPosition(GeoPoint animPosition) {
 		this.animPosition = animPosition;
 	}
-	
+
 	public GeoPoint getLastPosition() {
 		return lastPosition;
 	}
-	
+
 	public boolean isAnimateDirection() {
 		return animateDirection;
 	}
@@ -244,7 +261,7 @@ public class Tank {
 	public void setAnimateDirection(boolean animateDirection) {
 		this.animateDirection = animateDirection;
 	}
-	
+
 	public void setDirection(float dir) {
 		this.lastDirection = this.direction;
 		this.direction = dir;
@@ -254,18 +271,119 @@ public class Tank {
 	public float getDirection() {
 		return direction;
 	}
-	
+
 	public float getLastDirection() {
 		return lastDirection;
 	}
-	
-	public float getAnimDirection() {		
+
+	public float getAnimDirection() {
 		return animDirection;
-	} 
-	
-	public void setAnimDirection(float dir) {	
-//		Log.v("animDir", dir + "");
+	}
+
+	public void setAnimDirection(float dir) {
+		// Log.v("animDir", dir + "");
 		animDirection = dir;
 	}
 
+	public CopyOnWriteArrayList<GeoPoint> getRouteToPlayer() {
+		return routeToPlayer;
+	}
+
+	public void setRouteToPlayer(CopyOnWriteArrayList<GeoPoint> routeToPlayer) {
+		this.routeToPlayer = routeToPlayer;
+	}
+
+	public int getCurrentRouteCounter() {
+		return currentRouteCounter;
+	}
+
+	public void setCurrentRouteCounter(int currentRouteCounter) {
+		this.currentRouteCounter = currentRouteCounter;
+	}
+
+	public void calcNewRoute() {
+
+		try {
+			setRouteCounter(1);
+			setCurrentRouteCounter(0);
+
+			pairs = GameActivity.getDirectionData(getPosition().getLatitudeE6() / 1E6 + "," + getPosition().getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayerLocation().getLatitudeE6() / 1E6
+					+ "," + GameLogic.getInstance().getPlayerLocation().getLongitudeE6() / 1E6);
+
+			getRouteToPlayer().clear();
+			for (int i = 1; i < pairs.length; ++i) {
+				lngLat = pairs[i].split(",");
+				getRouteToPlayer().add(new GeoPoint((int) (Double.parseDouble(lngLat[1]) * 1E6), (int) (Double.parseDouble(lngLat[0]) * 1E6)));
+			}
+			Log.v("newRoute", "for tank " + getID());
+			for (GeoPoint p : getRouteToPlayer()) {
+				Log.v("tank " + getID(), p.toString());
+			}
+
+			oldGP = getPosition();
+			newGP = getRouteToPlayer().get(getCurrentRouteCounter());
+		} catch (Exception e) {
+			Log.e("tankAICalcNewRoute", e.toString());
+			e.printStackTrace();
+		}
+
+	}
+
+	public void interpolRoute() {
+		try {
+			//refresh route?
+			if(GameLogic.getInstance().getTimeLimit()%100==0) {
+				calcNewRoute();
+				return;
+			}			
+
+			newLat = (int) (oldGP.getLatitudeE6() + (getSpeed() * getRouteCounter()
+					* (1 / Math.sqrt(Math.pow(newGP.getLatitudeE6() - oldGP.getLatitudeE6(), 2) + Math.pow(newGP.getLongitudeE6() - oldGP.getLongitudeE6(), 2))) * (newGP.getLatitudeE6() - oldGP
+					.getLatitudeE6())));
+			newLog = (int) (oldGP.getLongitudeE6() + (getSpeed() * getRouteCounter()
+					* (1 / Math.sqrt(Math.pow(newGP.getLatitudeE6() - oldGP.getLatitudeE6(), 2) + Math.pow(newGP.getLongitudeE6() - oldGP.getLongitudeE6(), 2))) * (newGP.getLongitudeE6() - oldGP
+					.getLongitudeE6())));
+
+			// check if end of current interval is reached
+			if (Math.sqrt(
+					Math.pow(getSpeed() * getRouteCounter() * (1 / Math.sqrt(
+							Math.pow(newGP.getLatitudeE6() - oldGP.getLatitudeE6(), 2) + 
+							Math.pow(newGP.getLongitudeE6() - oldGP.getLongitudeE6(), 2)))
+						* (newGP.getLatitudeE6() - oldGP.getLatitudeE6()), 2) +
+					Math.pow(getSpeed() * getRouteCounter() * (1 / Math.sqrt(
+							Math.pow(newGP.getLatitudeE6() - oldGP.getLatitudeE6(), 2) + 
+							Math.pow(newGP.getLongitudeE6() - oldGP.getLongitudeE6(), 2)))
+						* (newGP.getLongitudeE6() - oldGP.getLongitudeE6()), 2)) 
+					< 
+					Math.sqrt(
+							Math.pow(oldGP.getLatitudeE6() - newGP.getLatitudeE6(), 2) +
+							Math.pow(oldGP.getLongitudeE6() - newGP.getLongitudeE6(), 2))) {
+				setRouteCounter(getRouteCounter() + 1);
+			} else {
+				setRouteCounter(1);
+				setCurrentRouteCounter(getCurrentRouteCounter() + 1);
+				
+				// check if route contains enough new points, 
+				// if not force recalc
+				if (getCurrentRouteCounter() > getRouteToPlayer().size()) {
+					calcNewRoute();
+					return;
+				}				
+
+				oldGP = getPosition();
+				newGP = getRouteToPlayer().get(getCurrentRouteCounter());
+				Log.v("Tank", "tank currentRoute " +getCurrentRouteCounter());
+				return;
+			}
+
+			newDir = (float) Math.atan2((oldGP.getLatitudeE6() - newGP.getLatitudeE6()), (oldGP.getLongitudeE6() - newGP.getLongitudeE6()));
+			newDir = (float) (270 - newDir * (180 / Math.PI));
+			setDirection(newDir);
+
+			setPosition(new GeoPoint(newLat, newLog));
+		} catch (Exception e) {
+			Log.e("TankAI", e.toString());
+			e.printStackTrace();
+		}
+	}
 }

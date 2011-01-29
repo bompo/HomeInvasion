@@ -27,7 +27,7 @@ public class GameService extends Service {
 	private Timer timer = new Timer();
 	private FileOutputStream fOut;
 	private Writer writer;
-
+		
 	private Handler mHandler = new Handler();
 
 	@Override
@@ -92,13 +92,13 @@ public class GameService extends Service {
 				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 10) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 11) {
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 100) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 12) {
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 200) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 13) {
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 300) {
 					sendBroadcast(addTankBroadcast);
 				}
 				try {
@@ -117,80 +117,10 @@ public class GameService extends Service {
 			}
 		}, 0, 1000);
 	}
-
+	
 	protected void tankAI() throws IOException {
 		for (final Tank tank : GameLogic.getInstance().getTanks()) {
-
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						if (tank.getCalcNewRoute()) {
-							tank.setOldRoutePosition(tank.getPosition());
-							tank.setRouteCounter(1);
-
-							// TODO cache Route and alter only if player moved
-							String pairs[] = GameActivity.getDirectionData(tank.getPosition().getLatitudeE6() / 1E6 + "," + tank.getPosition().getLongitudeE6() / 1E6, GameLogic.getInstance()
-									.getPlayerLocation().getLatitudeE6()
-									/ 1E6 + "," + GameLogic.getInstance().getPlayerLocation().getLongitudeE6() / 1E6);
-							String[] lngLat = pairs[1].split(",");
-							tank.setNextRoutePosition(new GeoPoint((int) (Double.parseDouble(lngLat[1]) * 1E6), (int) (Double.parseDouble(lngLat[0]) * 1E6)));
-							tank.setCalcNewRoute(false);
-							Log.v("newRoute", " true ");
-						}
-
-						GeoPoint newGP = tank.getNextRoutePosition();
-						int newLat = (int) (tank.getOldRoutePosition().getLatitudeE6() + (tank.getSpeed()
-								* tank.getRouteCounter()
-								* (1 / Math.sqrt(Math.pow(tank.getNextRoutePosition().getLatitudeE6() - tank.getOldRoutePosition().getLatitudeE6(), 2)
-										+ Math.pow(tank.getNextRoutePosition().getLongitudeE6() - tank.getOldRoutePosition().getLongitudeE6(), 2))) * (tank.getNextRoutePosition().getLatitudeE6() - tank
-								.getOldRoutePosition().getLatitudeE6())));
-						int newLog = (int) (tank.getOldRoutePosition().getLongitudeE6() + (tank.getSpeed()
-								* tank.getRouteCounter()
-								* (1 / Math.sqrt(Math.pow(tank.getNextRoutePosition().getLatitudeE6() - tank.getOldRoutePosition().getLatitudeE6(), 2)
-										+ Math.pow(tank.getNextRoutePosition().getLongitudeE6() - tank.getOldRoutePosition().getLongitudeE6(), 2))) * (tank.getNextRoutePosition().getLongitudeE6() - tank
-								.getOldRoutePosition().getLongitudeE6())));
-
-						if (Math.sqrt(Math.pow(
-								tank.getSpeed()
-										* tank.getRouteCounter()
-										* (1 / Math.sqrt(Math.pow(tank.getNextRoutePosition().getLatitudeE6() - tank.getOldRoutePosition().getLatitudeE6(), 2)
-												+ Math.pow(tank.getNextRoutePosition().getLongitudeE6() - tank.getOldRoutePosition().getLongitudeE6(), 2)))
-										* (tank.getNextRoutePosition().getLatitudeE6() - tank.getOldRoutePosition().getLatitudeE6()), 2)
-								+ Math.pow(
-										tank.getSpeed()
-												* tank.getRouteCounter()
-												* (1 / Math.sqrt(Math.pow(tank.getNextRoutePosition().getLatitudeE6() - tank.getOldRoutePosition().getLatitudeE6(), 2)
-														+ Math.pow(tank.getNextRoutePosition().getLongitudeE6() - tank.getOldRoutePosition().getLongitudeE6(), 2)))
-												* (tank.getNextRoutePosition().getLongitudeE6() - tank.getOldRoutePosition().getLongitudeE6()), 2)) < Math.sqrt(Math.pow(tank.getOldRoutePosition()
-								.getLatitudeE6() - tank.getNextRoutePosition().getLatitudeE6(), 2)
-								+ Math.pow(tank.getOldRoutePosition().getLongitudeE6() - tank.getNextRoutePosition().getLongitudeE6(), 2))) {
-							tank.setRouteCounter(tank.getRouteCounter() + 1);
-							newGP = new GeoPoint(newLat, newLog);
-						} else {
-							tank.setCalcNewRoute(true);
-						}
-
-												
-//						double diffLat = tank.getOldRoutePosition().getLatitudeE6() - tank.getNextRoutePosition().getLatitudeE6();
-//						double diffLog =  tank.getOldRoutePosition().getLongitudeE6() -tank.getNextRoutePosition().getLongitudeE6() ;
-//						double normdiffLog = (1/(Math.sqrt(Math.pow(diffLog, 2)+Math.pow(diffLat, 2))))* diffLog;
-//						double normdiffLat = (1/(Math.sqrt(Math.pow(diffLog, 2)+Math.pow(diffLat, 2))))* diffLat;
-//						
-//						float newDir = (float) (Math.acos(((1 * normdiffLat)+(0*normdiffLog))/(Math.sqrt(Math.pow(1, 2)+Math.pow(0, 2))*Math.sqrt(Math.pow(normdiffLat, 2)+Math.pow(normdiffLog, 2))))*180/Math.PI);
-//						if(newDir>180) newDir = (360-newDir);
-
-						float newDir =(float) Math.atan2((tank.getOldRoutePosition().getLatitudeE6()-tank.getNextRoutePosition().getLatitudeE6()),(tank.getOldRoutePosition().getLongitudeE6()-tank.getNextRoutePosition().getLongitudeE6()));
-						newDir = (float) (270- newDir * (180/Math.PI));
-						tank.setDirection(newDir);
-						Log.d("tank dir a", "dirvek:   " + newDir);
-						
-						tank.setPosition(newGP);
-					} catch (Exception e) {
-						Log.e("GhostAI", e.toString());
-					}
-				}
-			});
+			tank.interpolRoute();
 		}
 	}
 

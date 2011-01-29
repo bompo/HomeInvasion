@@ -1,12 +1,9 @@
 package de.swagner.homeinvasion;
 
-import java.util.Random;
-
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 
 import com.google.android.maps.GeoPoint;
