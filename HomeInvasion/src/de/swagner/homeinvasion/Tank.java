@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
@@ -45,6 +46,7 @@ public class Tank {
 	private float newDir;
 	private int newLat;
 	private int newLog;
+	private int refreshRoute;
 
 	private CopyOnWriteArrayList<GeoPoint> routeToPlayer;
 	private int currentRouteCounter;
@@ -64,6 +66,7 @@ public class Tank {
 	private boolean animateDirection;
 
 	public static int id = 0;
+	private Handler mHandler = new Handler();
 
 	public Tank(Context context, LocationManager locationManager, GeoPoint geoPoint) {
 		this.position = geoPoint;
@@ -96,6 +99,8 @@ public class Tank {
 		currentRouteCounter = 0;
 		routeToPlayer = new CopyOnWriteArrayList<GeoPoint>();
 
+		refreshRoute=0;
+		
 		calcNewRoute();
 
 	}
@@ -331,12 +336,8 @@ public class Tank {
 
 	public void interpolRoute() {
 		try {
-			//refresh route?
-			if(GameLogic.getInstance().getTimeLimit()%100==0) {
-				calcNewRoute();
-				return;
-			}			
-
+			++refreshRoute;
+			
 			newLat = (int) (oldGP.getLatitudeE6() + (getSpeed() * getRouteCounter()
 					* (1 / Math.sqrt(Math.pow(newGP.getLatitudeE6() - oldGP.getLatitudeE6(), 2) + Math.pow(newGP.getLongitudeE6() - oldGP.getLongitudeE6(), 2))) * (newGP.getLatitudeE6() - oldGP
 					.getLatitudeE6())));
@@ -368,7 +369,18 @@ public class Tank {
 				if (getCurrentRouteCounter() > getRouteToPlayer().size()) {
 					calcNewRoute();
 					return;
-				}				
+				}			
+				
+				// refresh route?
+				if (refreshRoute == 200) {
+					refreshRoute=0;
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							calcNewRoute();
+						}
+					}).start();
+				}		
 
 				oldGP = getPosition();
 				newGP = getRouteToPlayer().get(getCurrentRouteCounter());

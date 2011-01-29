@@ -92,13 +92,13 @@ public class GameService extends Service {
 				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 10) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 100) {
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 11) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 200) {
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 12) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 300) {
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 13) {
 					sendBroadcast(addTankBroadcast);
 				}
 				try {
