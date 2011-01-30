@@ -73,13 +73,11 @@ public class SettingsActivity extends Activity {
 	}
 
 	public void onDebugClick(View v) {
-		GameLogic.getInstance().setDebugMode(true);
+		Debug.getInstance().setDebugMode(true);
 	}
 
 	public void onParseClick(View v) {
-
-		GameLogic.getInstance().setParsedMode(true);
-		Debug.getInstance().parse();
+		Debug.getInstance().setParsedMode(true);
 	}
 
 	public void setDifficulty(String choice) {

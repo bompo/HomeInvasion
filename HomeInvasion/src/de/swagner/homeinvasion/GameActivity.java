@@ -139,6 +139,7 @@ public class GameActivity extends MapActivity {
 			criteria.setPowerRequirement(Criteria.POWER_LOW);
 			provider = locationManager.getBestProvider(criteria, true);
 
+			//DEBUG (remove for release)
 			try {
 				locationManager.removeTestProvider(provider);
 			} catch (IllegalArgumentException e) {
@@ -160,7 +161,7 @@ public class GameActivity extends MapActivity {
 			
 			locationManager.requestLocationUpdates(provider, 1000, 1f, locationListener);
 			
-			if (!theGame.getParsedMode()) {
+			if (!Debug.getInstance().getParsedMode()) {
 				// sensor setup
 				mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 				mySensors = mySensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
@@ -281,7 +282,7 @@ public class GameActivity extends MapActivity {
 			overlays.add(tankOverlay);
 			
 			// add ufo overlay
-			ufoOverlay = new UfoOverlay(this.getBaseContext());
+			ufoOverlay = new UfoOverlay();
 			overlays.add(ufoOverlay);
 
 			updateWithNewLocation(currentLocation);
@@ -617,7 +618,7 @@ public class GameActivity extends MapActivity {
 			startActivity(ScoreIntent);
 			finish();
 		}
-		if (theGame.getParsedMode()) {
+		if (Debug.getInstance().getParsedMode()) {
 			setLocation(Debug.getInstance().getCurrentRecordedPosition().getLatitudeE6() / 1E6, Debug.getInstance().getCurrentRecordedPosition().getLongitudeE6() / 1E6);
 		}
 	}

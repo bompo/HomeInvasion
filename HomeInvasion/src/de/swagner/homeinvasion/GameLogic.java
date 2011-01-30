@@ -54,9 +54,6 @@ public final class GameLogic {
 	private boolean gameOver;
 	private boolean victory;
 
-	private boolean debugMode;
-	private boolean parsedMode;
-	
 	//game settings vars
 	private boolean sound;
 	private boolean animation;
@@ -85,9 +82,6 @@ public final class GameLogic {
 		sound = false;
 		animation =true;
 		satellite=true;
-		
-		debugMode = false;
-		parsedMode = false;
 		
 		animatePlayerLocation=false;
 	}
@@ -291,28 +285,6 @@ public final class GameLogic {
 		gameOver = false;
 		Tank.id = 0;
 		Item.id = 0;
-	}
-
-	/**
-	 * DEBUG STUFF records and pased player position and location
-	 */
-
-	public boolean getDebugMode() {
-		return debugMode;
-	}
-
-	public void setDebugMode(boolean onoff) {
-		parsedMode = !onoff;
-		debugMode = onoff;
-	}
-
-	public boolean getParsedMode() {
-		return parsedMode;
-	}
-
-	public void setParsedMode(boolean onoff) {
-		debugMode = !onoff;
-		parsedMode = onoff;
 	}
 
 	public static double CalculationByDistance(GeoPoint startGP, GeoPoint endGP) {

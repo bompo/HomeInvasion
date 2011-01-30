@@ -22,17 +22,9 @@ public class Tank {
 	private LocationManager locationManager;
 	private int tankID;
 	private int speed;
-	private Bitmap bmp_tank_f1;
-	private Bitmap bmp_tank_f2;
-	private Bitmap bmp_tank_f3;
-	private Bitmap bmp_tank_f4;
-	private Bitmap bmp_tank_f5;
-	private Bitmap bmp_tank_f6;
-	private Bitmap bmp_tank_f7;
-	private Bitmap bmp_tank_f8;
-	private Bitmap bmp_tank_f9;
-	private Bitmap bmp_tank_f10;
-	private Bitmap bmp_tank_current;
+
+	public Bitmap bmp_tank_current;
+	
 	private boolean calcNewRoute;
 	private GeoPoint oldRoutePosition;
 	private GeoPoint nextRoutePosition;
@@ -78,17 +70,7 @@ public class Tank {
 		tankID = id;
 		speed = GameLogic.getInstance().getTankSpeed();
 
-		bmp_tank_f1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_f1);
-		bmp_tank_f2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_f2);
-		bmp_tank_f3 = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_f3);
-		bmp_tank_f4 = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_f4);
-		bmp_tank_f5 = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_f5);
-		bmp_tank_f6 = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_f6);
-		bmp_tank_f7 = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_f7);
-		bmp_tank_f8 = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_f8);
-		bmp_tank_f9 = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_f9);
-		bmp_tank_f10 = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_f10);
-		bmp_tank_current = bmp_tank_f1;
+		bmp_tank_current = Images.getInstance().bmp_tank_f1;
 
 		++id;
 		calcNewRoute = true;
@@ -177,43 +159,43 @@ public class Tank {
 	 */
 	public void update() {
 		if (currentFrame == 1) {
-			bmp_tank_current = bmp_tank_f1;
+			bmp_tank_current = Images.getInstance().bmp_tank_f1;
 		} else if (currentFrame == 3) {
-			bmp_tank_current = bmp_tank_f2;
+			bmp_tank_current = Images.getInstance().bmp_tank_f2;
 		} else if (currentFrame == 5) {
-			bmp_tank_current = bmp_tank_f3;
+			bmp_tank_current = Images.getInstance().bmp_tank_f3;
 		} else if (currentFrame == 7) {
-			bmp_tank_current = bmp_tank_f4;
+			bmp_tank_current = Images.getInstance().bmp_tank_f4;
 		} else if (currentFrame == 9) {
-			bmp_tank_current = bmp_tank_f5;
+			bmp_tank_current = Images.getInstance().bmp_tank_f5;
 		} else if (currentFrame == 49) {
-			bmp_tank_current = bmp_tank_f4;
+			bmp_tank_current = Images.getInstance().bmp_tank_f4;
 		} else if (currentFrame == 51) {
-			bmp_tank_current = bmp_tank_f3;
+			bmp_tank_current = Images.getInstance().bmp_tank_f3;
 		} else if (currentFrame == 53) {
-			bmp_tank_current = bmp_tank_f2;
+			bmp_tank_current = Images.getInstance().bmp_tank_f2;
 		} else if (currentFrame == 55) {
-			bmp_tank_current = bmp_tank_f1;
+			bmp_tank_current = Images.getInstance().bmp_tank_f1;
 		} else if (currentFrame == 95) {
-			bmp_tank_current = bmp_tank_f6;
+			bmp_tank_current = Images.getInstance().bmp_tank_f6;
 		} else if (currentFrame == 97) {
-			bmp_tank_current = bmp_tank_f7;
+			bmp_tank_current = Images.getInstance().bmp_tank_f7;
 		} else if (currentFrame == 99) {
-			bmp_tank_current = bmp_tank_f8;
+			bmp_tank_current = Images.getInstance().bmp_tank_f8;
 		} else if (currentFrame == 101) {
-			bmp_tank_current = bmp_tank_f9;
+			bmp_tank_current = Images.getInstance().bmp_tank_f9;
 		} else if (currentFrame == 103) {
-			bmp_tank_current = bmp_tank_f10;
+			bmp_tank_current = Images.getInstance().bmp_tank_f10;
 		} else if (currentFrame == 143) {
-			bmp_tank_current = bmp_tank_f9;
+			bmp_tank_current = Images.getInstance().bmp_tank_f9;
 		} else if (currentFrame == 145) {
-			bmp_tank_current = bmp_tank_f8;
+			bmp_tank_current = Images.getInstance().bmp_tank_f8;
 		} else if (currentFrame == 147) {
-			bmp_tank_current = bmp_tank_f7;
+			bmp_tank_current = Images.getInstance().bmp_tank_f7;
 		} else if (currentFrame == 149) {
-			bmp_tank_current = bmp_tank_f6;
+			bmp_tank_current = Images.getInstance().bmp_tank_f6;
 		} else if (currentFrame == 151) {
-			bmp_tank_current = bmp_tank_f1;
+			bmp_tank_current = Images.getInstance().bmp_tank_f1;
 		} else if (currentFrame == 191) {
 			currentFrame = 0;
 		}

@@ -1,6 +1,5 @@
 package de.swagner.homeinvasion;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -11,12 +10,12 @@ import com.google.android.maps.Projection;
 public class TankOverlay extends Overlay {
 
 	private Matrix matrix;
-	private Point myPoint;
+	private Point point;
 	private Projection projection;
 
 	public TankOverlay() {
 		super();
-		myPoint = new Point();
+		point = new Point();
 		matrix = new Matrix();
 	}
 
@@ -26,10 +25,13 @@ public class TankOverlay extends Overlay {
 		projection = mapView.getProjection();
 		if (shadow == false) {
 			for (Tank tank : GameLogic.getInstance().getTanks()) {
-				projection.toPixels(tank.getAnimPosition(), myPoint);
+				projection.toPixels(tank.getAnimPosition(), point);
 
+				//draw radius
+				canvas.drawBitmap(Images.getInstance().bmp_tank_radius_big, point.x - (Images.getInstance().bmp_tank_radius_big.getWidth() / 2), point.y - (Images.getInstance().bmp_tank_radius_big.getHeight() / 2), null);
+				
 				matrix.setRotate(tank.getAnimDirection(),(tank.getBitmap().getWidth()/2),(tank.getBitmap().getHeight()/2));
-				matrix.postTranslate(myPoint.x - (tank.getBitmap().getWidth()/2), myPoint.y - (tank.getBitmap().getHeight()/2));
+				matrix.postTranslate(point.x - (tank.getBitmap().getWidth()/2), point.y - (tank.getBitmap().getHeight()/2));
 				canvas.drawBitmap(tank.getBitmap(),matrix , null);
 			}
 		}

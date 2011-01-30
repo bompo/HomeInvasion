@@ -10,7 +10,6 @@ public class Images {
 	private static Images instance;
 
 	/** Explosion Animation **/
-	public Bitmap bmp_item_current;
 	public Bitmap bmp_item_f1;
 	public Bitmap bmp_item_f2;
 	public Bitmap bmp_item_f3;
@@ -35,9 +34,41 @@ public class Images {
 	public Bitmap bmp_target_f3;
 	public Bitmap bmp_target_f4;
 	public Bitmap bmp_target_f5;
+	
+	/** Tank animation **/
+	public Bitmap bmp_tank_f1;
+	public Bitmap bmp_tank_f2;
+	public Bitmap bmp_tank_f3;
+	public Bitmap bmp_tank_f4;
+	public Bitmap bmp_tank_f5;
+	public Bitmap bmp_tank_f6;
+	public Bitmap bmp_tank_f7;
+	public Bitmap bmp_tank_f8;
+	public Bitmap bmp_tank_f9;
+	public Bitmap bmp_tank_f10;
+	
+	/** Ufo animation **/
+	public Bitmap bmp_ufo_f1;
+	public Bitmap bmp_ufo_f2;
+	public Bitmap bmp_ufo_f3;
+	public Bitmap bmp_ufo_f4;
+	public Bitmap bmp_ufo_f5;
+	public Bitmap bmp_ufo_f6;
+	
+	/** Ufo shadow animation **/
+	public Bitmap bmp_ufo_shadow_f1;
+	public Bitmap bmp_ufo_shadow_f2;
+	public Bitmap bmp_ufo_shadow_f3;
+	public Bitmap bmp_ufo_shadow_f4;
+	public Bitmap bmp_ufo_shadow_f5;
+	public Bitmap bmp_ufo_shadow_f6;
+	
+	/** Radius **/
+	public Bitmap bmp_ufo_radius_small;
+	public Bitmap bmp_ufo_radius_big;
+	public Bitmap bmp_tank_radius_big;
 
 	private Images() {
-		bmp_item_current = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.explosion_result_1);
 		bmp_item_f1 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.explosion_f1);
 		bmp_item_f2 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.explosion_f2);
 		bmp_item_f3 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.explosion_f3);
@@ -55,11 +86,41 @@ public class Images {
 		bmp_item_f14_2 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.explosion_result_2);
 		bmp_item_f14_3 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.explosion_result_3);
 		bmp_item_f14_4 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.explosion_result_4);
+		
 		bmp_target_f1 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.explosion_target_f1);
 		bmp_target_f2 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.explosion_target_f2);
 		bmp_target_f3 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.explosion_target_f3);
 		bmp_target_f4 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.explosion_target_f4);
 		bmp_target_f5 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.explosion_target_f5);
+		
+		bmp_tank_f1 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f1);
+		bmp_tank_f2 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f2);
+		bmp_tank_f3 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f3);
+		bmp_tank_f4 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f4);
+		bmp_tank_f5 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f5);
+		bmp_tank_f6 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f6);
+		bmp_tank_f7 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f7);
+		bmp_tank_f8 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f8);
+		bmp_tank_f9 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f9);
+		bmp_tank_f10 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f10);
+	
+		bmp_ufo_f1 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_f1);
+		bmp_ufo_f2 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_f2);
+		bmp_ufo_f3 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_f3);
+		bmp_ufo_f4 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_f4);
+		bmp_ufo_f5 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_f5);
+		bmp_ufo_f6 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_f6);		
+
+		bmp_ufo_shadow_f1 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_shadow_f1);
+		bmp_ufo_shadow_f2 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_shadow_f2);
+		bmp_ufo_shadow_f3 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_shadow_f3);
+		bmp_ufo_shadow_f4 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_shadow_f4);
+		bmp_ufo_shadow_f5 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_shadow_f5);
+		bmp_ufo_shadow_f6 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_shadow_f6);
+		
+		bmp_ufo_radius_small = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_radius_small);
+		bmp_ufo_radius_big = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_radius_big);
+		bmp_tank_radius_big = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_radius_big);
 	}
 
 	public Bitmap getExplosionResult() {

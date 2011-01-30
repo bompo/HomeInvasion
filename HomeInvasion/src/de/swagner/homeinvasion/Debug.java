@@ -1,7 +1,11 @@
 package de.swagner.homeinvasion;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -17,10 +21,19 @@ public final class Debug {
 	private ArrayList<GeoPoint> recordedPositions;
 	private ArrayList<Float> recordedDirections;
 	
+	private FileOutputStream fOut;
+	private Writer writer;
+	
+	private boolean debugMode;
+	private boolean parsedMode;
+	
 	public Debug()
 	{
 		recordedPositions = new ArrayList<GeoPoint>();
 		recordedDirections = new ArrayList<Float>();
+		
+		debugMode = false;
+		parsedMode = false;
 	}
 	
 	public synchronized static Debug getInstance() {
@@ -89,6 +102,31 @@ public final class Debug {
 		}
 	}
 
+	public void record() {
+		String state = Environment.getExternalStorageState();
+
+		String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/de.swagner.homeinvasion/files/";
+		String fileName = "position.txt";
+
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+
+			try {
+				// Make sure the path exists
+				boolean exists = (new File(path)).exists();
+				if (!exists) {
+					new File(path).mkdirs();
+				}
+
+				// Open output stream
+				fOut = new FileOutputStream(path + fileName);
+				writer = new OutputStreamWriter(fOut, "UTF-8");
+
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+
+		}
+	}
 
 	public void setRecordedPositions(ArrayList<GeoPoint> recordedPositions) {
 		this.recordedPositions = recordedPositions;
@@ -126,6 +164,47 @@ public final class Debug {
 	public void setRecordedSession(ArrayList<GeoPoint> recordedPositions, ArrayList<Float> recordedDirections) {
 		this.recordedPositions = recordedPositions;
 		this.recordedDirections = recordedDirections;
+	}
+	
+	public void recordSession() throws IOException {
+		if (GameLogic.getInstance().isGameReady()) {
+			writer.write("" + GameLogic.getInstance().getPlayerLocation().getLatitudeE6());
+			writer.write(" ");
+			writer.write("" + GameLogic.getInstance().getPlayerLocation().getLongitudeE6());
+			writer.write(" ");
+			writer.write("" + GameLogic.getInstance().getPlayerDirection() + "\n");
+			writer.flush();
+		}
+	}
+	
+	public void stopRecording() {
+		try {
+			writer.close();
+			fOut.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean getDebugMode() {
+		return debugMode;
+	}
+
+	public void setDebugMode(boolean onoff) {
+		parsedMode = !onoff;
+		debugMode = onoff;
+		if(debugMode) record();
+	}
+
+	public boolean getParsedMode() {
+		return parsedMode;
+	}
+
+	public void setParsedMode(boolean onoff) {
+		debugMode = !onoff;
+		parsedMode = onoff;
+		if(parsedMode) parse();
 	}
 
 	

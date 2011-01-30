@@ -19,24 +19,8 @@ import com.google.android.maps.Projection;
 
 public class UfoOverlay extends Overlay {
 
-	private Context m_context;
-	private Bitmap bmp_ufo_f1;
-	private Bitmap bmp_ufo_f2;
-	private Bitmap bmp_ufo_f3;
-	private Bitmap bmp_ufo_f4;
-	private Bitmap bmp_ufo_f5;
-	private Bitmap bmp_ufo_f6;
 	private Bitmap bmp_ufo_current;
-	
-	private Bitmap bmp_ufo_shadow_f1;
-	private Bitmap bmp_ufo_shadow_f2;
-	private Bitmap bmp_ufo_shadow_f3;
-	private Bitmap bmp_ufo_shadow_f4;
-	private Bitmap bmp_ufo_shadow_f5;
-	private Bitmap bmp_ufo_shadow_f6;
 	private Bitmap bmp_ufo_shadow_current;
-	
-	private Bitmap bmp_ufo_radius_small;
 	private Bitmap bmp_ufo_radius_current;
 	
 	private int currentFrame;
@@ -47,27 +31,10 @@ public class UfoOverlay extends Overlay {
 	private Point point;
 	private Projection projection;
 
-	public UfoOverlay(Context context) {
-		m_context = context;
-		bmp_ufo_f1 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_f1);
-		bmp_ufo_f2 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_f2);
-		bmp_ufo_f3 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_f3);
-		bmp_ufo_f4 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_f4);
-		bmp_ufo_f5 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_f5);
-		bmp_ufo_f6 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_f6);		
-		bmp_ufo_current = bmp_ufo_f1;
-
-		bmp_ufo_shadow_f1 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f1);
-		bmp_ufo_shadow_f2 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f2);
-		bmp_ufo_shadow_f3 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f3);
-		bmp_ufo_shadow_f4 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f4);
-		bmp_ufo_shadow_f5 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f5);
-		bmp_ufo_shadow_f6 = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_shadow_f6);
-		bmp_ufo_shadow_current = bmp_ufo_shadow_f1;
-		
-		bmp_ufo_radius_small = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ufo_radius_small);
-		bmp_ufo_radius_current = bmp_ufo_radius_small;
-
+	public UfoOverlay() {
+		bmp_ufo_current = Images.getInstance().bmp_ufo_f1;
+		bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f1;
+		bmp_ufo_radius_current = Images.getInstance().bmp_ufo_radius_small;
 
 		currentFrame = 0;
 		animPlayerLocationCounter = 1;
@@ -104,41 +71,41 @@ public class UfoOverlay extends Overlay {
 
 	public void update() {
 		if (currentFrame == 1) {
-			bmp_ufo_current = bmp_ufo_f1;
-			bmp_ufo_shadow_current = bmp_ufo_shadow_f1;
+			bmp_ufo_current = Images.getInstance().bmp_ufo_f1;
+			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f1;
 		} else if (currentFrame == 3) {
-			bmp_ufo_current = bmp_ufo_f2;
-			bmp_ufo_shadow_current = bmp_ufo_shadow_f2;
+			bmp_ufo_current = Images.getInstance().bmp_ufo_f2;
+			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f2;
 		} else if (currentFrame == 5) {
-			bmp_ufo_current = bmp_ufo_f3;
-			bmp_ufo_shadow_current = bmp_ufo_shadow_f3;
+			bmp_ufo_current = Images.getInstance().bmp_ufo_f3;
+			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f3;
 		} else if (currentFrame == 7) {
-			bmp_ufo_current = bmp_ufo_f4;
-			bmp_ufo_shadow_current = bmp_ufo_shadow_f4;
+			bmp_ufo_current = Images.getInstance().bmp_ufo_f4;
+			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f4;
 		} else if (currentFrame == 9) {
-			bmp_ufo_current = bmp_ufo_f5;
-			bmp_ufo_shadow_current = bmp_ufo_shadow_f5;
+			bmp_ufo_current = Images.getInstance().bmp_ufo_f5;
+			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f5;
 		} else if (currentFrame == 11) {
-			bmp_ufo_current = bmp_ufo_f6;
-			bmp_ufo_shadow_current = bmp_ufo_shadow_f6;
+			bmp_ufo_current = Images.getInstance().bmp_ufo_f6;
+			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f6;
 		} else if (currentFrame == 13) {
-			bmp_ufo_current = bmp_ufo_f6;
-			bmp_ufo_shadow_current = bmp_ufo_shadow_f6;
+			bmp_ufo_current = Images.getInstance().bmp_ufo_f6;
+			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f6;
 		} else if (currentFrame == 15) {
-			bmp_ufo_current = bmp_ufo_f5;
-			bmp_ufo_shadow_current = bmp_ufo_shadow_f5;
+			bmp_ufo_current = Images.getInstance().bmp_ufo_f5;
+			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f5;
 		} else if (currentFrame == 17) {
-			bmp_ufo_current = bmp_ufo_f4;
-			bmp_ufo_shadow_current = bmp_ufo_shadow_f4;
+			bmp_ufo_current = Images.getInstance().bmp_ufo_f4;
+			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f4;
 		} else if (currentFrame == 19) {
-			bmp_ufo_current = bmp_ufo_f3;
-			bmp_ufo_shadow_current = bmp_ufo_shadow_f3;
+			bmp_ufo_current = Images.getInstance().bmp_ufo_f3;
+			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f3;
 		} else if (currentFrame == 21) {
-			bmp_ufo_current = bmp_ufo_f2;
-			bmp_ufo_shadow_current = bmp_ufo_shadow_f2;
+			bmp_ufo_current = Images.getInstance().bmp_ufo_f2;
+			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f2;
 		} else if (currentFrame == 23) {
-			bmp_ufo_current = bmp_ufo_f1;
-			bmp_ufo_shadow_current = bmp_ufo_shadow_f1;
+			bmp_ufo_current = Images.getInstance().bmp_ufo_f1;
+			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f1;
 			currentFrame = 0;
 		}
 		++currentFrame;

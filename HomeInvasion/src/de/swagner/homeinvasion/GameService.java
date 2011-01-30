@@ -25,41 +25,10 @@ public class GameService extends Service {
 	private Intent addTankBroadcast = new Intent(ADD_TANK_ACTION);
 	private final Binder binder = new LocalBinder();
 	private Timer timer = new Timer();
-	private FileOutputStream fOut;
-	private Writer writer;
-		
-	private Handler mHandler = new Handler();
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-
-		if (GameLogic.getInstance().getDebugMode()) {
-			String state = Environment.getExternalStorageState();
-
-			String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/de.swagner.homeinvasion/files/";
-			String fileName = "position.txt";
-
-			if (Environment.MEDIA_MOUNTED.equals(state)) {
-
-				try {
-					// Make sure the path exists
-					boolean exists = (new File(path)).exists();
-					if (!exists) {
-						new File(path).mkdirs();
-					}
-
-					// Open output stream
-					fOut = new FileOutputStream(path + fileName);
-					writer = new OutputStreamWriter(fOut, "UTF-8");
-
-				} catch (IOException ioe) {
-					ioe.printStackTrace();
-				}
-
-			}
-		}
-
 		startService();
 	}
 
@@ -71,15 +40,6 @@ public class GameService extends Service {
 	@Override
 	public void onDestroy() {
 		timer.cancel();
-		if (GameLogic.getInstance().getDebugMode()) {
-			try {
-				writer.close();
-				fOut.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		super.onDestroy();
 	}
 
@@ -92,33 +52,35 @@ public class GameService extends Service {
 				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 10) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 11) {
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 100) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 12) {
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 200) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 13) {
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 300) {
 					sendBroadcast(addTankBroadcast);
 				}
+				
+				tankAI();
+				
+				//DEBUG STUFF
 				try {
-					if (GameLogic.getInstance().getDebugMode())
-						recordSession();
-					tankAI();
-
+					if (Debug.getInstance().getDebugMode())
+						Debug.getInstance().recordSession();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
-				if (GameLogic.getInstance().getParsedMode() && GameLogic.getInstance().isGameReady()) {
+				if (Debug.getInstance().getParsedMode() && GameLogic.getInstance().isGameReady()) {
 					GameLogic.getInstance().setPlayerDirection(Debug.getInstance().getCurrentRecordedDirection());
 				}
+				
 			}
 		}, 0, 1000);
 	}
 	
-	protected void tankAI() throws IOException {
+	protected void tankAI() {
 		for (final Tank tank : GameLogic.getInstance().getTanks()) {
 			tank.interpolRoute();
 		}
@@ -127,17 +89,6 @@ public class GameService extends Service {
 	public class LocalBinder extends Binder {
 		GameService getService() {
 			return (GameService.this);
-		}
-	}
-
-	public void recordSession() throws IOException {
-		if (GameLogic.getInstance().isGameReady()) {
-			writer.write("" + GameLogic.getInstance().getPlayerLocation().getLatitudeE6());
-			writer.write(" ");
-			writer.write("" + GameLogic.getInstance().getPlayerLocation().getLongitudeE6());
-			writer.write(" ");
-			writer.write("" + GameLogic.getInstance().getPlayerDirection() + "\n");
-			writer.flush();
 		}
 	}
 }
