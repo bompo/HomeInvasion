@@ -13,8 +13,11 @@ import com.google.android.maps.Projection;
 
 public class ItemOverlay extends Overlay {
 
+	private Point myPoint;
+	
 	public ItemOverlay(Context context) {
 		super();
+		myPoint = new Point();
 	}
 
 	@Override
@@ -24,7 +27,6 @@ public class ItemOverlay extends Overlay {
 		if (shadow == false) {
 			if(GameLogic.getInstance().isGameReady()) {
 				for (Item item : GameLogic.getInstance().getItems()) {
-					Point myPoint = new Point();
 					projection.toPixels(item.getGeoPoint(), myPoint);
 					canvas.drawBitmap(item.getBitmap(), myPoint.x-item.getBitmap().getWidth()/2, myPoint.y-item.getBitmap().getHeight()/2, null);
 				}

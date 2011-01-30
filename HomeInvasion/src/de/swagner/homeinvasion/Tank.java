@@ -59,9 +59,9 @@ public class Tank {
 	private GeoPoint lastPosition;
 	private GeoPoint animPosition;
 
-	private float direction;
-	private float animDirection;
-	private float lastDirection;
+	private float direction=0;
+	private float animDirection=0;
+	private float lastDirection=0;
 
 	private boolean animateDirection;
 
@@ -97,6 +97,7 @@ public class Tank {
 		animatePosition = false;
 		animPosition = position;
 		currentRouteCounter = 0;
+		animDirection = 0;
 		routeToPlayer = new CopyOnWriteArrayList<GeoPoint>();
 
 		refreshRoute=0;

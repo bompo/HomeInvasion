@@ -10,7 +10,6 @@ import com.google.android.maps.Projection;
 
 public class TankOverlay extends Overlay {
 
-	private Bitmap resizedBitmap;
 	private Matrix matrix;
 	private Point myPoint;
 	private Projection projection;
@@ -18,6 +17,7 @@ public class TankOverlay extends Overlay {
 	public TankOverlay() {
 		super();
 		myPoint = new Point();
+		matrix = new Matrix();
 	}
 
 	@Override
@@ -28,10 +28,9 @@ public class TankOverlay extends Overlay {
 			for (Tank tank : GameLogic.getInstance().getTanks()) {
 				projection.toPixels(tank.getAnimPosition(), myPoint);
 
-				matrix = new Matrix();
-				matrix.postRotate(tank.getAnimDirection());
-				resizedBitmap = Bitmap.createBitmap(tank.getBitmap(), 0, 0, tank.getBitmap().getWidth(), tank.getBitmap().getHeight(), matrix, true);
-				canvas.drawBitmap(resizedBitmap, myPoint.x - tank.getBitmap().getWidth() / 2, myPoint.y - tank.getBitmap().getHeight() / 2, null);
+				matrix.setRotate(tank.getAnimDirection(),(tank.getBitmap().getWidth()/2),(tank.getBitmap().getHeight()/2));
+				matrix.postTranslate(myPoint.x - (tank.getBitmap().getWidth()/2), myPoint.y - (tank.getBitmap().getHeight()/2));
+				canvas.drawBitmap(tank.getBitmap(),matrix , null);
 			}
 		}
 	}
