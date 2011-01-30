@@ -32,7 +32,7 @@ public class Item {
 		dotID = id;
 		++id;
 
-		bmp_item_current = Images.getInstance().bmp_item_f1;
+		bmp_item_current = Images.getInstance().bmp_target_f1;
 	}
 
 	public GeoPoint getGeoPoint() {

@@ -103,7 +103,7 @@ public class Tank {
 	}
 
 	private void addTankProximityAlert() {
-		locationManager.addProximityAlert(getPosition().getLatitudeE6() / 1E6, getPosition().getLongitudeE6() / 1E6, GameLogic.getInstance().getItemRadius(), 2000, proximityIntent);
+		locationManager.addProximityAlert(getPosition().getLatitudeE6() / 1E6, getPosition().getLongitudeE6() / 1E6, GameLogic.getInstance().getTankRadius(), 2000, proximityIntent);
 	}
 
 	public void removeTankProximityAlert() {
@@ -231,6 +231,7 @@ public class Tank {
 	}
 
 	public GeoPoint getAnimPosition() {
+		if(!GameLogic.getInstance().isAnimation()) return this.position;
 		return animPosition;
 	}
 
@@ -265,11 +266,11 @@ public class Tank {
 	}
 
 	public float getAnimDirection() {
+		if(!GameLogic.getInstance().isAnimation()) return this.direction;
 		return animDirection;
 	}
 
 	public void setAnimDirection(float dir) {
-		// Log.v("animDir", dir + "");
 		animDirection = dir;
 	}
 

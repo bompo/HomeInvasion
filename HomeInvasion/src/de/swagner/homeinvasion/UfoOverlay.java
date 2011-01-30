@@ -53,16 +53,30 @@ public class UfoOverlay extends Overlay {
 				// Convert the location to screen pixels
 				projection.toPixels(GameLogic.getInstance().getAnimPlayerLocation(), point);
 				
-				//draw radius
-				canvas.drawBitmap(bmp_ufo_radius_current, point.x - (bmp_ufo_radius_current.getWidth() / 2), point.y - (bmp_ufo_radius_current.getHeight() / 2), null);
-				
-				//draw shadow
-				matrix.setRotate(GameLogic.getInstance().getAnimPlayerDirection(),bmp_ufo_shadow_current.getWidth() / 2,bmp_ufo_shadow_current.getHeight() / 2);
+				// draw radius
+				if(mapView.getZoomLevel()<=17) {
+					matrix.setScale(0.01f, 0.01f,bmp_ufo_radius_current.getWidth() / 2, bmp_ufo_radius_current.getHeight() / 2);
+				} else if(mapView.getZoomLevel()==18) {
+					matrix.setScale(0.5f, 0.5f,bmp_ufo_radius_current.getWidth() / 2, bmp_ufo_radius_current.getHeight() / 2);
+				}else if(mapView.getZoomLevel()==19) {
+					matrix.setScale(1f, 1f,bmp_ufo_radius_current.getWidth() / 2, bmp_ufo_radius_current.getHeight() / 2);
+				}else if(mapView.getZoomLevel()==20) {
+					matrix.setScale(2f, 2f,bmp_ufo_radius_current.getWidth() / 2, bmp_ufo_radius_current.getHeight() / 2);
+				}else if(mapView.getZoomLevel()==21) {
+					matrix.setScale(4f, 4f,bmp_ufo_radius_current.getWidth() / 2, bmp_ufo_radius_current.getHeight() / 2);
+				}else if(mapView.getZoomLevel()>=22) {
+					matrix.setScale(8f, 8f,bmp_ufo_radius_current.getWidth() / 2, bmp_ufo_radius_current.getHeight() / 2);
+				}
+				matrix.postTranslate(point.x - (bmp_ufo_radius_current.getWidth() / 2), point.y - (bmp_ufo_radius_current.getHeight() / 2));
+				canvas.drawBitmap(bmp_ufo_radius_current, matrix, null);
+
+				// draw shadow
+				matrix.setRotate(GameLogic.getInstance().getAnimPlayerDirection(), bmp_ufo_shadow_current.getWidth() / 2, bmp_ufo_shadow_current.getHeight() / 2);
 				matrix.postTranslate(point.x - (bmp_ufo_shadow_current.getWidth() / 2), point.y - (bmp_ufo_shadow_current.getHeight() / 2));
 				canvas.drawBitmap(bmp_ufo_shadow_current, matrix, null);
-				
-				//draw ufo
-				matrix.setRotate(GameLogic.getInstance().getAnimPlayerDirection(),bmp_ufo_current.getWidth() / 2,bmp_ufo_current.getHeight() / 2);
+
+				// draw ufo
+				matrix.setRotate(GameLogic.getInstance().getAnimPlayerDirection(), bmp_ufo_current.getWidth() / 2, bmp_ufo_current.getHeight() / 2);
 				matrix.postTranslate(point.x - (bmp_ufo_current.getWidth() / 2), point.y - (bmp_ufo_current.getHeight() / 2));
 				canvas.drawBitmap(bmp_ufo_current, matrix, null);
 			}

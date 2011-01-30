@@ -47,8 +47,9 @@ public final class GameLogic {
 	private boolean animatePlayerDirection;
 
 	private int gameRadius;
-	private int dotRadius;
-	private int itemDistance;
+	private int itemRadius;
+	private int tankRadius;
+	private int itemPlacementDistance;
 	private int maxTargets;
 
 	private boolean gameOver;
@@ -67,8 +68,9 @@ public final class GameLogic {
 		timeLimit = 1200;
 		timeLeft = timeLimit;
 		gameRadius = 100;
-		dotRadius = 50;
-		itemDistance = 400;
+		itemRadius = 55;
+		tankRadius = 75;
+		itemPlacementDistance = 400;
 		tankSpeed = 15;
 		victory = false;
 		gameOver = false;
@@ -129,7 +131,7 @@ public final class GameLogic {
 			return false;
 		
 		for(GeoPoint dotGeoPoint:getItemGeoPoints()) {
-			if(CalculationByDistance(geoPoint, dotGeoPoint)<dotRadius) return false;
+			if(CalculationByDistance(geoPoint, dotGeoPoint)<itemRadius) return false;
 		}
 
 		Item newItem = new Item(context, locationManager, geoPoint);
@@ -178,7 +180,6 @@ public final class GameLogic {
 	}
 	
 	public void setPlayerLocation(GeoPoint playerLocation) {
-		Log.v("new location", playerLocation.toString());
 		this.lastPlayerLocation = this.playerLocation;
 		this.playerLocation = playerLocation;
 		if(animPlayerLocation==null) animPlayerLocation=playerLocation;
@@ -191,6 +192,7 @@ public final class GameLogic {
 	}
 	
 	public GeoPoint getAnimPlayerLocation() {	
+		if(!GameLogic.getInstance().isAnimation()) return this.playerLocation;
 		return animPlayerLocation;
 	} 
 
@@ -217,6 +219,7 @@ public final class GameLogic {
 	}
 	
 	public float getAnimPlayerDirection() {		
+		if(!GameLogic.getInstance().isAnimation()) return this.playerDirection;
 		return animPlayerDirection;
 	} 
 	
@@ -226,7 +229,11 @@ public final class GameLogic {
 	} 
 
 	public int getItemRadius() {
-		return dotRadius;
+		return itemRadius;
+	}
+	
+	public int getTankRadius() {
+		return tankRadius;
 	}
 
 	public int getGameRadius() {
@@ -243,7 +250,7 @@ public final class GameLogic {
 	}
 
 	public int getItemDistance() {
-		return itemDistance;
+		return itemPlacementDistance;
 	}
 
 	public void gameOver(boolean victory) {

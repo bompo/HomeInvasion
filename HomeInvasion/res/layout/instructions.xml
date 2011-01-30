@@ -21,15 +21,15 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_weight="1" android:padding="6dip" android:background="@color/background1">
 
-		<TextView android:paddingTop="20dip" android:text="PacMap is a location-based game. To play the game you need a GPS signal and a working internet connection. There also have to be some roads nearby."
+		<TextView android:paddingTop="20dip" android:text="Aliens invade your neighborhood and you are one of them! You control your spaceship by actual walking outside in your neighborhood. To play the game you need a constant GPS signal and a working internet connection and some nearby roads."
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 
-		<TextView android:text="Your goal is to catch all the dots. For each dot you will get a point. But beware! Ghosts will try to catch you. Try to avoid them as long as possible."
+		<TextView android:text="Your mission is to destroy all the targets that your overlords have placed. Those are indicated through green glowing dots. To destory them you have to get them into your laser range. For each destroyed target you will get a point. But beware! Military is informed and trys to stop you. Don't get into the fire range of the tanks or they will destroy you."
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 			
 		<TextView android:paddingTop="20dip" android:textStyle="bold" android:text="WARNING!"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-		<TextView android:text="Don't play this game on a busy road! Don't put yourself in danger! Obey the traffic rules and regulations!"
+		<TextView android:text="Don't play this game on a busy road or while driving! Don't put yourself in danger! Obey the traffic rules and regulations!"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 	</LinearLayout>
 

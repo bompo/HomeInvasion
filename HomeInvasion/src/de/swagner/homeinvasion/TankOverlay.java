@@ -28,7 +28,21 @@ public class TankOverlay extends Overlay {
 				projection.toPixels(tank.getAnimPosition(), point);
 
 				//draw radius
-				canvas.drawBitmap(Images.getInstance().bmp_tank_radius_big, point.x - (Images.getInstance().bmp_tank_radius_big.getWidth() / 2), point.y - (Images.getInstance().bmp_tank_radius_big.getHeight() / 2), null);
+				if(mapView.getZoomLevel()<=17) {
+					matrix.setScale(0.01f, 0.01f,Images.getInstance().bmp_tank_radius_big.getWidth() / 2, Images.getInstance().bmp_tank_radius_big.getHeight() / 2);
+				} else if(mapView.getZoomLevel()==18) {
+					matrix.setScale(0.5f, 0.5f,Images.getInstance().bmp_tank_radius_big.getWidth() / 2, Images.getInstance().bmp_tank_radius_big.getHeight() / 2);
+				}else if(mapView.getZoomLevel()==19) {
+					matrix.setScale(1f, 1f,Images.getInstance().bmp_tank_radius_big.getWidth() / 2, Images.getInstance().bmp_tank_radius_big.getHeight() / 2);
+				}else if(mapView.getZoomLevel()==20) {
+					matrix.setScale(2f, 2f,Images.getInstance().bmp_tank_radius_big.getWidth() / 2, Images.getInstance().bmp_tank_radius_big.getHeight() / 2);
+				}else if(mapView.getZoomLevel()==21) {
+					matrix.setScale(4f, 4f,Images.getInstance().bmp_tank_radius_big.getWidth() / 2, Images.getInstance().bmp_tank_radius_big.getHeight() / 2);
+				}else if(mapView.getZoomLevel()>=22) {
+					matrix.setScale(8f, 8f,Images.getInstance().bmp_tank_radius_big.getWidth() / 2, Images.getInstance().bmp_tank_radius_big.getHeight() / 2);
+				}
+				matrix.postTranslate(point.x - (Images.getInstance().bmp_tank_radius_big.getWidth() / 2), point.y - (Images.getInstance().bmp_tank_radius_big.getHeight() / 2));
+				canvas.drawBitmap(Images.getInstance().bmp_tank_radius_big, matrix, null);
 				
 				matrix.setRotate(tank.getAnimDirection(),(tank.getBitmap().getWidth()/2),(tank.getBitmap().getHeight()/2));
 				matrix.postTranslate(point.x - (tank.getBitmap().getWidth()/2), point.y - (tank.getBitmap().getHeight()/2));
