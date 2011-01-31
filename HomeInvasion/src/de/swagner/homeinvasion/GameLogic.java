@@ -4,10 +4,8 @@ import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 
@@ -31,20 +29,12 @@ public final class GameLogic {
 
 	private CopyOnWriteArraySet<Item> items;
 	private CopyOnWriteArraySet<Tank> tanks;
+	private Ufo player;
 	private int points;
 	private boolean gameReady;
 	private int timeLeft;
 	private int timeLimit;
 	private int tankSpeed;
-	private GeoPoint lastPlayerLocation;
-	private GeoPoint animPlayerLocation;
-	private GeoPoint playerLocation;
-
-	private float playerDirection;
-	private float animPlayerDirection;
-	private float lastPlayerDirection;
-	private boolean animatePlayerLocation;
-	private boolean animatePlayerDirection;
 
 	private int gameRadius;
 	private int itemRadius;
@@ -63,6 +53,7 @@ public final class GameLogic {
 	private GameLogic() {
 		items = new CopyOnWriteArraySet<Item>();
 		tanks = new CopyOnWriteArraySet<Tank>();
+		player = new Ufo();
 		points = 0;
 		gameReady = false;
 		timeLimit = 1200;
@@ -76,16 +67,13 @@ public final class GameLogic {
 		gameOver = false;
 		Tank.id = 0;
 		Item.id = 0;
-		playerDirection = 0;
-		lastPlayerDirection = 0;
-		animPlayerDirection = 0;
+		
 		maxTargets = 50;
 
 		sound = false;
 		animation =true;
 		satellite=true;
-		
-		animatePlayerLocation=false;
+	
 	}
 
 	public synchronized static GameLogic getInstance() {
@@ -94,13 +82,9 @@ public final class GameLogic {
 		}
 		return instance;
 	}
-
-	public void setItems(CopyOnWriteArraySet<Item> items) {
-		this.items = items;
-	}
-
-	public void setTanks(CopyOnWriteArraySet<Tank> tanks) {
-		this.tanks = tanks;
+	
+	public Ufo getPlayer() {
+		return player;
 	}
 
 	public CopyOnWriteArraySet<Item> getItems() {
@@ -178,55 +162,6 @@ public final class GameLogic {
 			gameOver(false);
 		}
 	}
-	
-	public void setPlayerLocation(GeoPoint playerLocation) {
-		this.lastPlayerLocation = this.playerLocation;
-		this.playerLocation = playerLocation;
-		if(animPlayerLocation==null) animPlayerLocation=playerLocation;
-		if(lastPlayerLocation==null) lastPlayerLocation=playerLocation;
-		setAnimatePlayerLocation(true);
-	}
-	
-	public void setAnimPlayerLocation(GeoPoint animPlayerLocation) {
-		this.animPlayerLocation = animPlayerLocation;
-	}
-	
-	public GeoPoint getAnimPlayerLocation() {	
-		if(!GameLogic.getInstance().isAnimation()) return this.playerLocation;
-		return animPlayerLocation;
-	} 
-
-	public GeoPoint getPlayerLocation() {
-		return playerLocation;
-	}
-	
-	public GeoPoint getLastPlayerLocation() {
-		return lastPlayerLocation;
-	}
-	
-	public void setPlayerDirection(float dir) {
-		this.lastPlayerDirection = this.playerDirection;
-		this.playerDirection = dir;
-		setAnimatePlayerDirection(true);
-	}
-
-	public float getPlayerDirection() {
-		return playerDirection;
-	}
-	
-	public float getLastPlayerDirection() {
-		return lastPlayerDirection;
-	}
-	
-	public float getAnimPlayerDirection() {		
-		if(!GameLogic.getInstance().isAnimation()) return this.playerDirection;
-		return animPlayerDirection;
-	} 
-	
-	public void setAnimPlayerDirection(float dir) {	
-//		Log.v("animDir", dir + "");
-		animPlayerDirection = dir;
-	} 
 
 	public int getItemRadius() {
 		return itemRadius;
@@ -244,8 +179,7 @@ public final class GameLogic {
 		return tankSpeed;
 	}
 	
-	public void setTankSpeed(int speed) 
-	{
+	public void setTankSpeed(int speed) {
 		tankSpeed = speed;
 	}
 
@@ -311,8 +245,7 @@ public final class GameLogic {
 		return maxTargets;
 	}
 	
-	public void setMaxTargets(int max) 
-	{
+	public void setMaxTargets(int max) {
 		maxTargets = max;
 	}
 	
@@ -358,22 +291,6 @@ public final class GameLogic {
 	
 	public void switchSatellite() {
 		satellite = !satellite;
-	}
-
-	public boolean isAnimatePlayerLocation() {
-		return animatePlayerLocation;
-	}
-
-	public void setAnimatePlayerLocation(boolean animatePlayer) {
-		this.animatePlayerLocation = animatePlayer;
-	}
-	
-	public boolean isAnimatePlayerDirection() {
-		return animatePlayerDirection;
-	}
-
-	public void setAnimatePlayerDirection(boolean animatePlayerDirection) {
-		this.animatePlayerDirection = animatePlayerDirection;
 	}
 	
 	public static GeoPoint interpolatePos(GeoPoint p1, GeoPoint p2, double f) {

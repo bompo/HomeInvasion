@@ -77,11 +77,7 @@ public class GameActivity extends MapActivity {
 	public static String itemsProximityIntentAction = new String("de.swagner.homeinvasion.item.PROXIMITY_ALERT");
 	public static String tankProximityIntentAction = new String("de.swagner.homeinvasion.tank.PROXIMITY_ALERT");
 
-	private static final int PROGRESS = 0x1;
-
 	private ProgressBar mProgress;
-	private int mProgressStatus = 0;
-
 	private Handler mHandler = new Handler();
 
 	private Dialog dialog;
@@ -217,7 +213,7 @@ public class GameActivity extends MapActivity {
 				locationFix = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						while (theGame.getPlayerLocation() == null) {
+						while (theGame.getPlayer().getLocation() == null) {
 							// Wait for first GPS Fix
 							// (do nothing until loc != null)
 							try {
@@ -305,7 +301,7 @@ public class GameActivity extends MapActivity {
 			GeoPoint point = new GeoPoint((int) (currentLocation.getLatitude() * 1E6), (int) (currentLocation.getLongitude() * 1E6));
 
 			mapController.animateTo(point);
-			theGame.setPlayerLocation(point);
+			theGame.getPlayer().setLocation(point);
 		}
 	}
 
@@ -346,7 +342,7 @@ public class GameActivity extends MapActivity {
 
 		@Override
 		public void onSensorChanged(SensorEvent event) {
-			GameLogic.getInstance().setPlayerDirection(event.values[0]);
+			GameLogic.getInstance().getPlayer().setDirection(event.values[0]);
 		}
 	};
 
@@ -482,17 +478,15 @@ public class GameActivity extends MapActivity {
 				for (int x = -radius; x <= radius; x = x + radius) {
 					try {
 
-						double geoLat = theGame.getPlayerLocation().getLatitudeE6() + (x * theGame.getGameRadius());
-						double geoLng = theGame.getPlayerLocation().getLongitudeE6() + (y * theGame.getGameRadius());
-
-						//Log.v("routePos", geoLat + " " + geoLng);
+						double geoLat = theGame.getPlayer().getLocation().getLatitudeE6() + (x * theGame.getGameRadius());
+						double geoLng = theGame.getPlayer().getLocation().getLongitudeE6() + (y * theGame.getGameRadius());
 
 						// cals route from player to grid position
 						routePos = new GeoPoint((int) (geoLat), (int) (geoLng));
 
-						String pairs[] = GameActivity.getDirectionData(routePos.getLatitudeE6() / 1E6 + "," + routePos.getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayerLocation()
+						String pairs[] = GameActivity.getDirectionData(routePos.getLatitudeE6() / 1E6 + "," + routePos.getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayer().getLocation()
 								.getLatitudeE6()
-								/ 1E6 + "," + GameLogic.getInstance().getPlayerLocation().getLongitudeE6() / 1E6);
+								/ 1E6 + "," + GameLogic.getInstance().getPlayer().getLocation().getLongitudeE6() / 1E6);
 						cntRoute = 1;
 						if(pairs.length<2) break;
 						String[] nextlngLat = pairs[cntRoute].split(",");
@@ -547,7 +541,7 @@ public class GameActivity extends MapActivity {
 							}
 							//Log.v("placeDot", dotPos.toString());
 
-							if (GameLogic.CalculationByDistance(theGame.getPlayerLocation(), routePos) > GameLogic.CalculationByDistance(theGame.getPlayerLocation(), dotPos)) {
+							if (GameLogic.CalculationByDistance(theGame.getPlayer().getLocation(), routePos) > GameLogic.CalculationByDistance(theGame.getPlayer().getLocation(), dotPos)) {
 								theGame.addItem(getApplicationContext(), locationManager, dotPos);
 							}
 						}
@@ -633,28 +627,28 @@ public class GameActivity extends MapActivity {
 			int leftRight = (int) Math.floor((Math.random() * 2) + 1);
 			if (leftRight == 1) {
 				// left
-				geoLat = (double) (theGame.getPlayerLocation().getLatitudeE6() + ((-6 * theGame.getItemDistance())));
+				geoLat = (double) (theGame.getPlayer().getLocation().getLatitudeE6() + ((-6 * theGame.getItemDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLng = (double) (theGame.getPlayerLocation().getLongitudeE6() + ((rnd * theGame.getItemDistance())));
+				geoLng = (double) (theGame.getPlayer().getLocation().getLongitudeE6() + ((rnd * theGame.getItemDistance())));
 			} else {
 				// right
-				geoLat = (double) (theGame.getPlayerLocation().getLatitudeE6() + ((6 * theGame.getItemDistance())));
+				geoLat = (double) (theGame.getPlayer().getLocation().getLatitudeE6() + ((6 * theGame.getItemDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLng = (double) (theGame.getPlayerLocation().getLongitudeE6() + ((rnd * theGame.getItemDistance())));
+				geoLng = (double) (theGame.getPlayer().getLocation().getLongitudeE6() + ((rnd * theGame.getItemDistance())));
 			}
 		} else {
 			// top or down
 			int topDown = (int) Math.floor((Math.random() * 2) + 1);
 			if (topDown == 1) {
 				// top
-				geoLng = (double) (theGame.getPlayerLocation().getLongitudeE6() + ((6 * theGame.getItemDistance())));
+				geoLng = (double) (theGame.getPlayer().getLocation().getLongitudeE6() + ((6 * theGame.getItemDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLat = (double) (theGame.getPlayerLocation().getLatitudeE6() + ((rnd * theGame.getItemDistance())));
+				geoLat = (double) (theGame.getPlayer().getLocation().getLatitudeE6() + ((rnd * theGame.getItemDistance())));
 			} else {
 				// down
-				geoLng = (double) (theGame.getPlayerLocation().getLongitudeE6() + ((-6 * theGame.getItemDistance())));
+				geoLng = (double) (theGame.getPlayer().getLocation().getLongitudeE6() + ((-6 * theGame.getItemDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLat = (double) (theGame.getPlayerLocation().getLatitudeE6() + ((rnd * theGame.getItemDistance())));
+				geoLat = (double) (theGame.getPlayer().getLocation().getLatitudeE6() + ((rnd * theGame.getItemDistance())));
 			}
 		}
 
@@ -663,8 +657,8 @@ public class GameActivity extends MapActivity {
 
 		try {
 			// search nearest street for this point
-			String pairs[] = GameActivity.getDirectionData(point.getLatitudeE6() / 1E6 + "," + point.getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayerLocation().getLatitudeE6() / 1E6 + ","
-					+ GameLogic.getInstance().getPlayerLocation().getLongitudeE6() / 1E6);
+			String pairs[] = GameActivity.getDirectionData(point.getLatitudeE6() / 1E6 + "," + point.getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayer().getLocation().getLatitudeE6() / 1E6 + ","
+					+ GameLogic.getInstance().getPlayer().getLocation().getLongitudeE6() / 1E6);
 
 			String[] nextlngLat = pairs[0].split(",");
 

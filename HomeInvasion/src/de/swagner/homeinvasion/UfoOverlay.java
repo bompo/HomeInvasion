@@ -1,18 +1,10 @@
 package de.swagner.homeinvasion;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.DrawFilter;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Point;
-import android.location.Location;
-import android.util.Log;
 
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
@@ -49,9 +41,9 @@ public class UfoOverlay extends Overlay {
 		super.draw(canvas, mapView, shadow);
 		projection = mapView.getProjection();
 		if (shadow == false) {
-			if (GameLogic.getInstance().getAnimPlayerLocation() != null) {
+			if (GameLogic.getInstance().getPlayer().getAnimLocation() != null) {
 				// Convert the location to screen pixels
-				projection.toPixels(GameLogic.getInstance().getAnimPlayerLocation(), point);
+				projection.toPixels(GameLogic.getInstance().getPlayer().getAnimLocation(), point);
 				
 				// draw radius
 				if(mapView.getZoomLevel()<=17) {
@@ -68,15 +60,15 @@ public class UfoOverlay extends Overlay {
 					matrix.setScale(8f, 8f,bmp_ufo_radius_current.getWidth() / 2, bmp_ufo_radius_current.getHeight() / 2);
 				}
 				matrix.postTranslate(point.x - (bmp_ufo_radius_current.getWidth() / 2), point.y - (bmp_ufo_radius_current.getHeight() / 2));
-				canvas.drawBitmap(bmp_ufo_radius_current, matrix, null);
-
+				canvas.drawBitmap(bmp_ufo_radius_current, matrix, null);	
+				
 				// draw shadow
-				matrix.setRotate(GameLogic.getInstance().getAnimPlayerDirection(), bmp_ufo_shadow_current.getWidth() / 2, bmp_ufo_shadow_current.getHeight() / 2);
+				matrix.setRotate(GameLogic.getInstance().getPlayer().getAnimDirection(), bmp_ufo_shadow_current.getWidth() / 2, bmp_ufo_shadow_current.getHeight() / 2);
 				matrix.postTranslate(point.x - (bmp_ufo_shadow_current.getWidth() / 2), point.y - (bmp_ufo_shadow_current.getHeight() / 2));
 				canvas.drawBitmap(bmp_ufo_shadow_current, matrix, null);
 
 				// draw ufo
-				matrix.setRotate(GameLogic.getInstance().getAnimPlayerDirection(), bmp_ufo_current.getWidth() / 2, bmp_ufo_current.getHeight() / 2);
+				matrix.setRotate(GameLogic.getInstance().getPlayer().getAnimDirection(), bmp_ufo_current.getWidth() / 2, bmp_ufo_current.getHeight() / 2);
 				matrix.postTranslate(point.x - (bmp_ufo_current.getWidth() / 2), point.y - (bmp_ufo_current.getHeight() / 2));
 				canvas.drawBitmap(bmp_ufo_current, matrix, null);
 			}
@@ -124,21 +116,21 @@ public class UfoOverlay extends Overlay {
 		}
 		++currentFrame;
 
-		if (GameLogic.getInstance().isAnimatePlayerLocation()) {
-			GameLogic.getInstance().setAnimPlayerLocation(GameLogic.interpolatePos(GameLogic.getInstance().getLastPlayerLocation(), GameLogic.getInstance().getPlayerLocation(), animPlayerLocationCounter / 30.));
+		if (GameLogic.getInstance().getPlayer().isAnimateLocation()) {
+			GameLogic.getInstance().getPlayer().setAnimLocation(GameLogic.interpolatePos(GameLogic.getInstance().getPlayer().getLastLocation(), GameLogic.getInstance().getPlayer().getLocation(), animPlayerLocationCounter / 30.));
 			animPlayerLocationCounter = animPlayerLocationCounter + 1;
 			if (animPlayerLocationCounter == 30) {
 				animPlayerLocationCounter = 1;
-				GameLogic.getInstance().setAnimatePlayerLocation(false);
+				GameLogic.getInstance().getPlayer().setAnimateLocation(false);
 			}
 		}
 
-		if (GameLogic.getInstance().isAnimatePlayerDirection()) {
-			GameLogic.getInstance().setAnimPlayerDirection(GameLogic.interpolateDir(GameLogic.getInstance().getLastPlayerDirection(), GameLogic.getInstance().getPlayerDirection(), animPlayerDirectionCounter / 30.));
+		if (GameLogic.getInstance().getPlayer().isAnimateDirection()) {
+			GameLogic.getInstance().getPlayer().setAnimDirection(GameLogic.interpolateDir(GameLogic.getInstance().getPlayer().getLastDirection(), GameLogic.getInstance().getPlayer().getDirection(), animPlayerDirectionCounter / 30.));
 			animPlayerDirectionCounter = animPlayerDirectionCounter + 1;
 			if (animPlayerDirectionCounter == 30) {
 				animPlayerDirectionCounter = 1;
-				GameLogic.getInstance().setAnimatePlayerDirection(false);
+				GameLogic.getInstance().getPlayer().setAnimateDirection(false);
 			}
 		}
 

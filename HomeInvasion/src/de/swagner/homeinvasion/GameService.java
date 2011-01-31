@@ -1,21 +1,13 @@
 package de.swagner.homeinvasion;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Environment;
-import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
-import com.google.android.maps.GeoPoint;
 
 public class GameService extends Service {
 	public static final int NOTIF_ID = 1337;
@@ -73,7 +65,7 @@ public class GameService extends Service {
 					e.printStackTrace();
 				}
 				if (Debug.getInstance().getParsedMode() && GameLogic.getInstance().isGameReady()) {
-					GameLogic.getInstance().setPlayerDirection(Debug.getInstance().getCurrentRecordedDirection());
+					GameLogic.getInstance().getPlayer().setDirection(Debug.getInstance().getCurrentRecordedDirection());
 				}
 				
 			}

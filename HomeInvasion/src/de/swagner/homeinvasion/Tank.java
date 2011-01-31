@@ -1,15 +1,12 @@
 package de.swagner.homeinvasion;
 
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.LocationManager;
-import android.os.Handler;
 import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
@@ -58,7 +55,6 @@ public class Tank {
 	private boolean animateDirection;
 
 	public static int id = 0;
-	private Handler mHandler = new Handler();
 
 	public Tank(Context context, LocationManager locationManager, GeoPoint geoPoint) {
 		this.position = geoPoint;
@@ -296,8 +292,8 @@ public class Tank {
 			setRouteCounter(1);
 			setCurrentRouteCounter(0);
 
-			pairs = GameActivity.getDirectionData(getPosition().getLatitudeE6() / 1E6 + "," + getPosition().getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayerLocation().getLatitudeE6() / 1E6
-					+ "," + GameLogic.getInstance().getPlayerLocation().getLongitudeE6() / 1E6);
+			pairs = GameActivity.getDirectionData(getPosition().getLatitudeE6() / 1E6 + "," + getPosition().getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayer().getLocation().getLatitudeE6() / 1E6
+					+ "," + GameLogic.getInstance().getPlayer().getLocation().getLongitudeE6() / 1E6);
 
 			getRouteToPlayer().clear();
 			for (int i = 1; i < pairs.length; ++i) {

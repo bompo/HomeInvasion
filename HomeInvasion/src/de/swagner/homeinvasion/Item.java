@@ -41,7 +41,6 @@ public class Item {
 
 	private void addDotProximityAlert() {
 		float radius = GameLogic.getInstance().getItemRadius(); // meters
-		long expiration = -1; // do not expire
 		locationManager.addProximityAlert(getGeoPoint().getLatitudeE6() / 1E6, getGeoPoint().getLongitudeE6() / 1E6, radius, (GameLogic.getInstance().getTimeLeft()*1000)+5000, proximityIntent);
 	}
 

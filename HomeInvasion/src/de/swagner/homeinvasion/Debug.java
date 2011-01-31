@@ -148,14 +148,14 @@ public final class Debug {
 	}
 	
 	public GeoPoint getCurrentRecordedPosition() {
-		if (GameLogic.getInstance().getTimeLimit() - GameLogic.getInstance().getTimeLeft() < recordedPositions.size()-1) {
+		if (GameLogic.getInstance().getTimeLimit() - GameLogic.getInstance().getTimeLeft() < recordedPositions.size()) {
 			return recordedPositions.get(GameLogic.getInstance().getTimeLimit() - GameLogic.getInstance().getTimeLeft());
 		}
 		return null;
 	}
 
 	public Float getCurrentRecordedDirection() {
-		if (GameLogic.getInstance().getTimeLimit() - GameLogic.getInstance().getTimeLeft()  < recordedDirections.size()-1) {
+		if (GameLogic.getInstance().getTimeLimit() - GameLogic.getInstance().getTimeLeft()  < recordedDirections.size()) {
 			return recordedDirections.get(GameLogic.getInstance().getTimeLimit() - GameLogic.getInstance().getTimeLeft());
 		}
 		return null;
@@ -168,11 +168,11 @@ public final class Debug {
 	
 	public void recordSession() throws IOException {
 		if (GameLogic.getInstance().isGameReady()) {
-			writer.write("" + GameLogic.getInstance().getPlayerLocation().getLatitudeE6());
+			writer.write("" + GameLogic.getInstance().getPlayer().getLocation().getLatitudeE6());
 			writer.write(" ");
-			writer.write("" + GameLogic.getInstance().getPlayerLocation().getLongitudeE6());
+			writer.write("" + GameLogic.getInstance().getPlayer().getLocation().getLongitudeE6());
 			writer.write(" ");
-			writer.write("" + GameLogic.getInstance().getPlayerDirection() + "\n");
+			writer.write("" + GameLogic.getInstance().getPlayer().getDirection() + "\n");
 			writer.flush();
 		}
 	}
@@ -182,7 +182,6 @@ public final class Debug {
 			writer.close();
 			fOut.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

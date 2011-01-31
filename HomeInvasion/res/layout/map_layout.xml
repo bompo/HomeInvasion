@@ -8,6 +8,9 @@
 			android:contentDescription="@string/description_logo" android:src="@drawable/title_logo" />
 
 		<View style="@style/TitleBarSpring" />
+		<TextView style="@style/TitleBarText" android:text=""
+			android:id="@+id/tv_points" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
 		<ProgressBar style="@style/TitleBarProgressIndicator"
 			android:visibility="gone" android:id="@+id/progressbar" />
 	</LinearLayout>
@@ -28,13 +31,12 @@
 
 	<LinearLayout style="@style/TitleBar">
 		<TextView style="@style/TitleBarText" android:text=""
-			android:id="@+id/tv_points" android:layout_width="wrap_content"
-			android:layout_height="wrap_content"></TextView>
-		<TextView style="@style/TitleBarText" android:text=""
 			android:id="@+id/tv_time" android:layout_width="wrap_content"
 			android:layout_height="wrap_content"></TextView>
-
 		<View style="@style/TitleBarSpring" />
+		<TextView style="@style/TitleBarText" android:text="next tank in 10sec"
+			android:id="@+id/tv_next_tank" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
 
 	</LinearLayout>
 
