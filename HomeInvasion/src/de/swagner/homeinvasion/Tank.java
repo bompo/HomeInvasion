@@ -51,6 +51,9 @@ public class Tank {
 	private float direction=0;
 	private float animDirection=0;
 	private float lastDirection=0;
+	
+	private boolean shootAnim=false;
+	private int shotFrame = 0;
 
 	private boolean animateDirection;
 
@@ -154,56 +157,64 @@ public class Tank {
 	 * updates tank animation
 	 */
 	public void update() {
-		if (currentFrame == 1) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f1;
-		} else if (currentFrame == 3) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f2;
-		} else if (currentFrame == 5) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f3;
-		} else if (currentFrame == 7) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f4;
-		} else if (currentFrame == 9) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f5;
-		} else if (currentFrame == 49) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f4;
-		} else if (currentFrame == 51) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f3;
-		} else if (currentFrame == 53) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f2;
-		} else if (currentFrame == 55) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f1;
-		} else if (currentFrame == 95) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f6;
-		} else if (currentFrame == 97) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f7;
-		} else if (currentFrame == 99) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f8;
-		} else if (currentFrame == 101) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f9;
-		} else if (currentFrame == 103) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f10;
-		} else if (currentFrame == 143) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f9;
-		} else if (currentFrame == 145) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f8;
-		} else if (currentFrame == 147) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f7;
-		} else if (currentFrame == 149) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f6;
-		} else if (currentFrame == 151) {
-			bmp_tank_current = Images.getInstance().bmp_tank_f1;
-		} else if (currentFrame == 191) {
-			currentFrame = 0;
-		}
+		if(shootAnim) {
+			++shotFrame;
+			if(shotFrame==20) {
+				GameLogic.getInstance().getPlayer().setAlive(false);
+			}
+		} else {
+			if (currentFrame == 1) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f1;
+			} else if (currentFrame == 3) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f2;
+			} else if (currentFrame == 5) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f3;
+			} else if (currentFrame == 7) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f4;
+			} else if (currentFrame == 9) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f5;
+			} else if (currentFrame == 49) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f4;
+			} else if (currentFrame == 51) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f3;
+			} else if (currentFrame == 53) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f2;
+			} else if (currentFrame == 55) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f1;
+			} else if (currentFrame == 95) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f6;
+			} else if (currentFrame == 97) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f7;
+			} else if (currentFrame == 99) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f8;
+			} else if (currentFrame == 101) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f9;
+			} else if (currentFrame == 103) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f10;
+			} else if (currentFrame == 143) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f9;
+			} else if (currentFrame == 145) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f8;
+			} else if (currentFrame == 147) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f7;
+			} else if (currentFrame == 149) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f6;
+			} else if (currentFrame == 151) {
+				bmp_tank_current = Images.getInstance().bmp_tank_f1;
+			} else if (currentFrame == 191) {
+				currentFrame = 0;
+			}
+	
+			++currentFrame;
+		
 
-		++currentFrame;
-
-		if (isAnimatePosition()) {
-			setAnimPosition(GameLogic.interpolatePos(getLastPosition(), getPosition(), animPositionCounter / 30.));
-			animPositionCounter = animPositionCounter + 1;
-			if (animPositionCounter == 30) {
-				animPositionCounter = 1;
-				setAnimatePosition(false);
+			if (isAnimatePosition()) {
+				setAnimPosition(GameLogic.interpolatePos(getLastPosition(), getPosition(), animPositionCounter / 30.));
+				animPositionCounter = animPositionCounter + 1;
+				if (animPositionCounter == 30) {
+					animPositionCounter = 1;
+					setAnimatePosition(false);
+				}
 			}
 		}
 
@@ -292,17 +303,13 @@ public class Tank {
 			setRouteCounter(1);
 			setCurrentRouteCounter(0);
 
-			pairs = GameActivity.getDirectionData(getPosition().getLatitudeE6() / 1E6 + "," + getPosition().getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayer().getLocation().getLatitudeE6() / 1E6
-					+ "," + GameLogic.getInstance().getPlayer().getLocation().getLongitudeE6() / 1E6);
+			pairs = GameActivity.getDirectionData(getPosition().getLatitudeE6() / 1E6 + "," + getPosition().getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayer().getPosition().getLatitudeE6() / 1E6
+					+ "," + GameLogic.getInstance().getPlayer().getPosition().getLongitudeE6() / 1E6);
 
 			getRouteToPlayer().clear();
 			for (int i = 1; i < pairs.length; ++i) {
 				lngLat = pairs[i].split(",");
 				getRouteToPlayer().add(new GeoPoint((int) (Double.parseDouble(lngLat[1]) * 1E6), (int) (Double.parseDouble(lngLat[0]) * 1E6)));
-			}
-			Log.v("newRoute", "for tank " + getID());
-			for (GeoPoint p : getRouteToPlayer()) {
-				Log.v("tank " + getID(), p.toString());
 			}
 
 			oldGP = getPosition();
@@ -315,6 +322,8 @@ public class Tank {
 	}
 
 	public void interpolRoute() {
+		if(shootAnim) return;
+		
 		try {
 			++refreshRoute;
 			
@@ -364,7 +373,6 @@ public class Tank {
 
 				oldGP = getPosition();
 				newGP = getRouteToPlayer().get(getCurrentRouteCounter());
-				Log.v("Tank", "tank currentRoute " +getCurrentRouteCounter());
 				return;
 			}
 
@@ -378,4 +386,24 @@ public class Tank {
 			e.printStackTrace();
 		}
 	}
+		
+	public boolean isShootAnim() {
+		if (shootAnim) {
+			// look to player
+			newDir = (float) Math.atan2((oldGP.getLatitudeE6() - GameLogic.getInstance().getPlayer().getPosition().getLatitudeE6()), 
+										(oldGP.getLongitudeE6() - GameLogic.getInstance().getPlayer().getPosition().getLongitudeE6()));
+			newDir = (float) (270 - newDir * (180 / Math.PI));
+			setDirection(newDir);
+			return true;
+		}
+		return false;
+	}
+
+	public GeoPoint getShootAnimPosition() {
+		return GameLogic.interpolatePos(getPosition(),GameLogic.getInstance().getPlayer().getPosition(), shotFrame/20.);
+	}
+
+	public void setShootAnim(boolean b) {
+		this.shootAnim = b;
+	}	
 }

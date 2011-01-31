@@ -168,9 +168,9 @@ public final class Debug {
 	
 	public void recordSession() throws IOException {
 		if (GameLogic.getInstance().isGameReady()) {
-			writer.write("" + GameLogic.getInstance().getPlayer().getLocation().getLatitudeE6());
+			writer.write("" + GameLogic.getInstance().getPlayer().getPosition().getLatitudeE6());
 			writer.write(" ");
-			writer.write("" + GameLogic.getInstance().getPlayer().getLocation().getLongitudeE6());
+			writer.write("" + GameLogic.getInstance().getPlayer().getPosition().getLongitudeE6());
 			writer.write(" ");
 			writer.write("" + GameLogic.getInstance().getPlayer().getDirection() + "\n");
 			writer.flush();

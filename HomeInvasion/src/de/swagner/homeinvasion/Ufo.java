@@ -4,9 +4,9 @@ import com.google.android.maps.GeoPoint;
 
 public class Ufo {
 
-	private GeoPoint lastLocation;
-	private GeoPoint animLocation;
-	private GeoPoint Location;
+	private GeoPoint lastPosition;
+	private GeoPoint animPosition;
+	private GeoPoint position;
 
 	private float direction;
 	private float animDirection;
@@ -14,36 +14,39 @@ public class Ufo {
 	private boolean animateLocation;
 	private boolean animateDirection;
 	
+	private boolean alive=true;
+	
 	public Ufo() {
 		direction = 0;
 		lastDirection = 0;
 		animDirection = 0;		
 		animateLocation=false;
+		alive=true;
 	}
 	
-	public void setLocation(GeoPoint Location) {
-		this.lastLocation = this.Location;
-		this.Location = Location;
-		if(animLocation==null) animLocation=Location;
-		if(lastLocation==null) lastLocation=Location;
+	public void setPosition(GeoPoint position) {
+		this.lastPosition = this.position;
+		this.position = position;
+		if(animPosition==null) animPosition=position;
+		if(lastPosition==null) lastPosition=position;
 		setAnimateLocation(true);
 	}
 	
-	public void setAnimLocation(GeoPoint animLocation) {
-		this.animLocation = animLocation;
+	public void setAnimPosition(GeoPoint animPosition) {
+		this.animPosition = animPosition;
 	}
 	
-	public GeoPoint getAnimLocation() {	
-		if(!GameLogic.getInstance().isAnimation()) return this.Location;
-		return animLocation;
+	public GeoPoint getAnimPosition() {	
+		if(!GameLogic.getInstance().isAnimation()) return this.position;
+		return animPosition;
 	} 
 
-	public GeoPoint getLocation() {
-		return Location;
+	public GeoPoint getPosition() {
+		return position;
 	}
 	
-	public GeoPoint getLastLocation() {
-		return lastLocation;
+	public GeoPoint getLastPosition() {
+		return lastPosition;
 	}
 	
 	public void setDirection(float dir) {
@@ -66,7 +69,6 @@ public class Ufo {
 	} 
 	
 	public void setAnimDirection(float dir) {	
-//		Log.v("animDir", dir + "");
 		animDirection = dir;
 	} 
 	
@@ -84,5 +86,13 @@ public class Ufo {
 
 	public void setAnimateDirection(boolean animateDirection) {
 		this.animateDirection = animateDirection;
+	}
+	
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
 	}
 }

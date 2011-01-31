@@ -18,8 +18,8 @@ public class TankProximityIntentReceiver extends BroadcastReceiver {
 			for (Tank tank : GameLogic.getInstance().getTanks()) {
 				if (tank.getID() == ghostID) {
 					tank.removeTankProximityAlert();
-					GameLogic.getInstance().gameOver(false);
-					GameLogic.getInstance().getTanks().remove(tank);	
+					GameLogic.getInstance().getPlayer().setAlive(false);
+					tank.setShootAnim(true);
 					if(GameLogic.getInstance().isSound()) {
 						MediaPlayer mp = MediaPlayer.create(context, R.raw.gameover);
 						mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {

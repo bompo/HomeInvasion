@@ -25,6 +25,11 @@ public class TankOverlay extends Overlay {
 		projection = mapView.getProjection();
 		if (shadow == false) {
 			for (Tank tank : GameLogic.getInstance().getTanks()) {
+				if(tank.isShootAnim()) {
+					projection.toPixels(tank.getShootAnimPosition(), point);
+					canvas.drawBitmap(Images.getInstance().bmp_tank_shoot, point.x-tank.getBitmap().getWidth()/2, point.y-tank.getBitmap().getHeight()/2, null);
+				}	
+				
 				projection.toPixels(tank.getAnimPosition(), point);
 
 				//draw radius

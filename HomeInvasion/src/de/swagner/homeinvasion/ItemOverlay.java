@@ -10,22 +10,28 @@ import com.google.android.maps.Projection;
 
 public class ItemOverlay extends Overlay {
 
-	private Point myPoint;
+	private Point point;
+	private Projection projection;
 	
 	public ItemOverlay(Context context) {
 		super();
-		myPoint = new Point();
+		point = new Point();
 	}
 
 	@Override
 	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
 		super.draw(canvas, mapView, shadow);
-		Projection projection = mapView.getProjection();
+		projection = mapView.getProjection();
 		if (shadow == false) {
 			if(GameLogic.getInstance().isGameReady()) {
 				for (Item item : GameLogic.getInstance().getItems()) {
-					projection.toPixels(item.getGeoPoint(), myPoint);
-					canvas.drawBitmap(item.getBitmap(), myPoint.x-item.getBitmap().getWidth()/2, myPoint.y-item.getBitmap().getHeight()/2, null);
+					if(item.isShootAnim()) {
+						projection.toPixels(item.getShootAnimPosition(), point);
+						canvas.drawBitmap(Images.getInstance().bmp_target_f1, point.x-item.getBitmap().getWidth()/2, point.y-item.getBitmap().getHeight()/2, null);
+					}					
+					
+					projection.toPixels(item.getPosition(), point);
+					canvas.drawBitmap(item.getBitmap(), point.x-item.getBitmap().getWidth()/2, point.y-item.getBitmap().getHeight()/2, null);
 				}
 			}
 		}

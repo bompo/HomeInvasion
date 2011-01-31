@@ -12,18 +12,20 @@ public class Item {
 
 	public PendingIntent proximityIntent;
 	public Intent dotsProximityIntent;
-	private GeoPoint geoPoint;
+	private GeoPoint position;
 	private LocationManager locationManager;
 	private int dotID;
 	private Bitmap bmp_item_current;
 	private int currentFrame = 0;
+	private int shotFrame = 0;
 	private boolean destroyedAnim = false;
+	private boolean shootAnim = false;
 	private boolean destroyed = false;
 
 	public static int id = 0;
 
 	public Item(Context context, LocationManager locationManager, GeoPoint geoPoint) {
-		this.geoPoint = geoPoint;
+		this.position = geoPoint;
 		this.locationManager = locationManager;
 		dotsProximityIntent = new Intent(GameActivity.itemsProximityIntentAction);
 		dotsProximityIntent.putExtra("dotID", id);
@@ -35,17 +37,17 @@ public class Item {
 		bmp_item_current = Images.getInstance().bmp_target_f1;
 	}
 
-	public GeoPoint getGeoPoint() {
-		return geoPoint;
+	public GeoPoint getPosition() {
+		return position;
 	}
 
 	private void addDotProximityAlert() {
 		float radius = GameLogic.getInstance().getItemRadius(); // meters
-		locationManager.addProximityAlert(getGeoPoint().getLatitudeE6() / 1E6, getGeoPoint().getLongitudeE6() / 1E6, radius, (GameLogic.getInstance().getTimeLeft()*1000)+5000, proximityIntent);
+		locationManager.addProximityAlert(getPosition().getLatitudeE6() / 1E6, getPosition().getLongitudeE6() / 1E6, radius, (GameLogic.getInstance().getTimeLeft()*1000)+5000, proximityIntent);
 	}
 
 	public void removeItemProximityAlert() {
-		destroyedAnim = true;
+		shootAnim = true;
 		currentFrame = 0;
 		locationManager.removeProximityAlert(proximityIntent);
 	}
@@ -53,6 +55,14 @@ public class Item {
 	public int getID() {
 		return dotID;
 	}
+	
+	public boolean isShootAnim() {
+		return shootAnim;
+	}
+	
+	public GeoPoint getShootAnimPosition() {
+		return GameLogic.interpolatePos(GameLogic.getInstance().getPlayer().getPosition(),getPosition(), shotFrame/20.);
+	}	
 
 	public Bitmap getBitmap() {
 		return bmp_item_current;
@@ -62,6 +72,14 @@ public class Item {
 	 * updates item animation for explosion
 	 */
 	public void update() {
+		if(shootAnim) {
+			++shotFrame;
+			if(shotFrame==20) {
+				destroyedAnim=true;
+				shootAnim=false;
+			}
+		}
+		
 		if (destroyedAnim) {
 			if (currentFrame == 1) {
 				bmp_item_current = Images.getInstance().bmp_item_f1;
@@ -96,7 +114,7 @@ public class Item {
 			}
 			++currentFrame;
 		}
-		if(!destroyed) {
+		if(!destroyed && !destroyedAnim) {
 			if (currentFrame == 1) {
 				bmp_item_current = Images.getInstance().bmp_target_f1; 
 			} else if (currentFrame == 3) {

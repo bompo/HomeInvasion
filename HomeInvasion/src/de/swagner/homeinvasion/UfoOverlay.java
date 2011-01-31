@@ -41,9 +41,9 @@ public class UfoOverlay extends Overlay {
 		super.draw(canvas, mapView, shadow);
 		projection = mapView.getProjection();
 		if (shadow == false) {
-			if (GameLogic.getInstance().getPlayer().getAnimLocation() != null) {
+			if (GameLogic.getInstance().getPlayer().getAnimPosition() != null) {
 				// Convert the location to screen pixels
-				projection.toPixels(GameLogic.getInstance().getPlayer().getAnimLocation(), point);
+				projection.toPixels(GameLogic.getInstance().getPlayer().getAnimPosition(), point);
 				
 				// draw radius
 				if(mapView.getZoomLevel()<=17) {
@@ -76,63 +76,101 @@ public class UfoOverlay extends Overlay {
 	}
 
 	public void update() {
-		if (currentFrame == 1) {
-			bmp_ufo_current = Images.getInstance().bmp_ufo_f1;
-			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f1;
-		} else if (currentFrame == 3) {
-			bmp_ufo_current = Images.getInstance().bmp_ufo_f2;
-			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f2;
-		} else if (currentFrame == 5) {
-			bmp_ufo_current = Images.getInstance().bmp_ufo_f3;
-			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f3;
-		} else if (currentFrame == 7) {
-			bmp_ufo_current = Images.getInstance().bmp_ufo_f4;
-			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f4;
-		} else if (currentFrame == 9) {
-			bmp_ufo_current = Images.getInstance().bmp_ufo_f5;
-			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f5;
-		} else if (currentFrame == 11) {
-			bmp_ufo_current = Images.getInstance().bmp_ufo_f6;
-			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f6;
-		} else if (currentFrame == 13) {
-			bmp_ufo_current = Images.getInstance().bmp_ufo_f6;
-			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f6;
-		} else if (currentFrame == 15) {
-			bmp_ufo_current = Images.getInstance().bmp_ufo_f5;
-			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f5;
-		} else if (currentFrame == 17) {
-			bmp_ufo_current = Images.getInstance().bmp_ufo_f4;
-			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f4;
-		} else if (currentFrame == 19) {
-			bmp_ufo_current = Images.getInstance().bmp_ufo_f3;
-			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f3;
-		} else if (currentFrame == 21) {
-			bmp_ufo_current = Images.getInstance().bmp_ufo_f2;
-			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f2;
-		} else if (currentFrame == 23) {
-			bmp_ufo_current = Images.getInstance().bmp_ufo_f1;
-			bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f1;
-			currentFrame = 0;
-		}
-		++currentFrame;
+		if (!GameLogic.getInstance().getPlayer().isAlive()) {
+			if (currentFrame == 1) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f1;
+			} else if (currentFrame == 3) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f2;
+			} else if (currentFrame == 5) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f3;
+			} else if (currentFrame == 7) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f4;
+			} else if (currentFrame == 9) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f5;
+			} else if (currentFrame == 11) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f6;
+			} else if (currentFrame == 13) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f7;
+			} else if (currentFrame == 15) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f8;
+			} else if (currentFrame == 17) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f9;
+			} else if (currentFrame == 19) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f10;
+			} else if (currentFrame == 21) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f11;
+			} else if (currentFrame == 23) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f12;
+			} else if (currentFrame == 25) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f13;
+			} else if (currentFrame == 27) {
+				bmp_ufo_current = Images.getInstance().getExplosionResult();
+			} else if (currentFrame == 500) {
+				GameLogic.getInstance().gameOver(false);
+			}
+			++currentFrame;
 
-		if (GameLogic.getInstance().getPlayer().isAnimateLocation()) {
-			GameLogic.getInstance().getPlayer().setAnimLocation(GameLogic.interpolatePos(GameLogic.getInstance().getPlayer().getLastLocation(), GameLogic.getInstance().getPlayer().getLocation(), animPlayerLocationCounter / 30.));
-			animPlayerLocationCounter = animPlayerLocationCounter + 1;
-			if (animPlayerLocationCounter == 30) {
-				animPlayerLocationCounter = 1;
-				GameLogic.getInstance().getPlayer().setAnimateLocation(false);
+		} else {
+			if (currentFrame == 1) {
+				bmp_ufo_current = Images.getInstance().bmp_ufo_f1;
+				bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f1;
+			} else if (currentFrame == 3) {
+				bmp_ufo_current = Images.getInstance().bmp_ufo_f2;
+				bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f2;
+			} else if (currentFrame == 5) {
+				bmp_ufo_current = Images.getInstance().bmp_ufo_f3;
+				bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f3;
+			} else if (currentFrame == 7) {
+				bmp_ufo_current = Images.getInstance().bmp_ufo_f4;
+				bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f4;
+			} else if (currentFrame == 9) {
+				bmp_ufo_current = Images.getInstance().bmp_ufo_f5;
+				bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f5;
+			} else if (currentFrame == 11) {
+				bmp_ufo_current = Images.getInstance().bmp_ufo_f6;
+				bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f6;
+			} else if (currentFrame == 13) {
+				bmp_ufo_current = Images.getInstance().bmp_ufo_f6;
+				bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f6;
+			} else if (currentFrame == 15) {
+				bmp_ufo_current = Images.getInstance().bmp_ufo_f5;
+				bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f5;
+			} else if (currentFrame == 17) {
+				bmp_ufo_current = Images.getInstance().bmp_ufo_f4;
+				bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f4;
+			} else if (currentFrame == 19) {
+				bmp_ufo_current = Images.getInstance().bmp_ufo_f3;
+				bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f3;
+			} else if (currentFrame == 21) {
+				bmp_ufo_current = Images.getInstance().bmp_ufo_f2;
+				bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f2;
+			} else if (currentFrame == 23) {
+				bmp_ufo_current = Images.getInstance().bmp_ufo_f1;
+				bmp_ufo_shadow_current = Images.getInstance().bmp_ufo_shadow_f1;
+				currentFrame = 0;
+			}
+			++currentFrame;
+			
+			if (GameLogic.getInstance().getPlayer().isAnimateLocation()) {
+				GameLogic.getInstance().getPlayer().setAnimPosition(GameLogic.interpolatePos(GameLogic.getInstance().getPlayer().getLastPosition(), GameLogic.getInstance().getPlayer().getPosition(), animPlayerLocationCounter / 30.));
+				animPlayerLocationCounter = animPlayerLocationCounter + 1;
+				if (animPlayerLocationCounter == 30) {
+					animPlayerLocationCounter = 1;
+					GameLogic.getInstance().getPlayer().setAnimateLocation(false);
+				}
+			}
+
+			if (GameLogic.getInstance().getPlayer().isAnimateDirection()) {
+				GameLogic.getInstance().getPlayer().setAnimDirection(GameLogic.interpolateDir(GameLogic.getInstance().getPlayer().getLastDirection(), GameLogic.getInstance().getPlayer().getDirection(), animPlayerDirectionCounter / 30.));
+				animPlayerDirectionCounter = animPlayerDirectionCounter + 1;
+				if (animPlayerDirectionCounter == 30) {
+					animPlayerDirectionCounter = 1;
+					GameLogic.getInstance().getPlayer().setAnimateDirection(false);
+				}
 			}
 		}
 
-		if (GameLogic.getInstance().getPlayer().isAnimateDirection()) {
-			GameLogic.getInstance().getPlayer().setAnimDirection(GameLogic.interpolateDir(GameLogic.getInstance().getPlayer().getLastDirection(), GameLogic.getInstance().getPlayer().getDirection(), animPlayerDirectionCounter / 30.));
-			animPlayerDirectionCounter = animPlayerDirectionCounter + 1;
-			if (animPlayerDirectionCounter == 30) {
-				animPlayerDirectionCounter = 1;
-				GameLogic.getInstance().getPlayer().setAnimateDirection(false);
-			}
-		}
+
 
 	}
 

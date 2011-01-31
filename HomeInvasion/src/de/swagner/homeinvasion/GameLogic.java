@@ -19,7 +19,7 @@ public final class GameLogic {
 	
 	final static int TANK_SLOW = 10;
 	final static int TANK_MEDIUM = 20;
-	final static int TANK_FAST = 30;
+	final static int TANK_FAST = 100;
 	
 	final static int SHORT_LENGTH = 600;
 	final static int MEDIUM_LENGTH = 900;
@@ -94,7 +94,7 @@ public final class GameLogic {
 	public HashSet<GeoPoint> getItemGeoPoints() {
 		HashSet<GeoPoint> geoPoints = new HashSet<GeoPoint>();
 		for (Item item : items) {
-			geoPoints.add(item.getGeoPoint());
+			geoPoints.add(item.getPosition());
 		}
 		return geoPoints;
 	}
@@ -226,6 +226,7 @@ public final class GameLogic {
 		gameOver = false;
 		Tank.id = 0;
 		Item.id = 0;
+		player.setAlive(true);
 	}
 
 	public static double CalculationByDistance(GeoPoint startGP, GeoPoint endGP) {

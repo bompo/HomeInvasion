@@ -46,6 +46,7 @@ public class Images {
 	public Bitmap bmp_tank_f8;
 	public Bitmap bmp_tank_f9;
 	public Bitmap bmp_tank_f10;
+	public Bitmap bmp_tank_shoot;
 	
 	/** Ufo animation **/
 	public Bitmap bmp_ufo_f1;
@@ -103,6 +104,7 @@ public class Images {
 		bmp_tank_f8 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f8);
 		bmp_tank_f9 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f9);
 		bmp_tank_f10 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_f10);
+		bmp_tank_shoot = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.tank_shoot);
 	
 		bmp_ufo_f1 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_f1);
 		bmp_ufo_f2 = BitmapFactory.decodeResource(HomeInvasionApp.getContext().getResources(), R.drawable.ufo_f2);

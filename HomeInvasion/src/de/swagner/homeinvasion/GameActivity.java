@@ -52,10 +52,18 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
-
+/**
+ * Gameplay Activity
+ * LocationListener, Overlays,   
+ * 
+ * @author bompo
+ *
+ */
 public class GameActivity extends MapActivity {
-	private static SensorManager mySensorManager;
-	private List<Sensor> mySensors;
+	private static final int TWO_MINUTES = 1000 * 60 * 2;
+	private static SensorManager sensorManager;
+	
+	private List<Sensor> sensors;
 	private boolean sersorrunning = false;
 	private MapView mapView;
 	private MapController mapController;
@@ -63,13 +71,9 @@ public class GameActivity extends MapActivity {
 	private UfoOverlay ufoOverlay;
 	private ItemOverlay itemOverlay;
 	private TankOverlay tankOverlay;
-	public static Geocoder fwdGeocoder;
 	private TextView tv_points;
 	private TextView tv_time;
-	public static int radius;
 
-	private static final int TWO_MINUTES = 1000 * 60 * 2;
-	
 	private GameLogic theGame;
 	private GameService gameService;
 	private Intent gameServiceIntent;
@@ -106,14 +110,12 @@ public class GameActivity extends MapActivity {
 
 			theGame = GameLogic.getInstance();
 
-			fwdGeocoder = new Geocoder(this, Locale.getDefault());
-
-			// intent for proximity dots stuff
+			// intent for proximity items stuff
 			itemProximityIntentReceiver = new ItemProximityIntentReceiver();
 			IntentFilter itemIntentFilter = new IntentFilter(itemsProximityIntentAction);
 			registerReceiver(itemProximityIntentReceiver, itemIntentFilter);
 
-			// intent for proximity ghosts stuff
+			// intent for proximity tanks stuff
 			tankProximityIntentReceiver = new TankProximityIntentReceiver();
 			IntentFilter tankIntentFilter = new IntentFilter(tankProximityIntentAction);
 			registerReceiver(tankProximityIntentReceiver, tankIntentFilter);
@@ -159,11 +161,11 @@ public class GameActivity extends MapActivity {
 			
 			if (!Debug.getInstance().getParsedMode()) {
 				// sensor setup
-				mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-				mySensors = mySensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
+				sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+				sensors = sensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
 
-				if (mySensors.size() > 0) {
-					mySensorManager.registerListener(mySensorEventListener, mySensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
+				if (sensors.size() > 0) {
+					sensorManager.registerListener(mySensorEventListener, sensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
 					sersorrunning = true;
 				} else {
 					sersorrunning = false;
@@ -213,7 +215,7 @@ public class GameActivity extends MapActivity {
 				locationFix = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						while (theGame.getPlayer().getLocation() == null) {
+						while (theGame.getPlayer().getPosition() == null) {
 							// Wait for first GPS Fix
 							// (do nothing until loc != null)
 							try {
@@ -301,7 +303,7 @@ public class GameActivity extends MapActivity {
 			GeoPoint point = new GeoPoint((int) (currentLocation.getLatitude() * 1E6), (int) (currentLocation.getLongitude() * 1E6));
 
 			mapController.animateTo(point);
-			theGame.getPlayer().setLocation(point);
+			theGame.getPlayer().setPosition(point);
 		}
 	}
 
@@ -365,7 +367,7 @@ public class GameActivity extends MapActivity {
 		}
 
 		if (sersorrunning) {
-			mySensorManager.unregisterListener(mySensorEventListener);
+			sensorManager.unregisterListener(mySensorEventListener);
 		}
 
 		try {
@@ -398,7 +400,7 @@ public class GameActivity extends MapActivity {
 		super.onResume();
 		
 		if (sersorrunning) {
-			mySensorManager.registerListener(mySensorEventListener, mySensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
+			sensorManager.registerListener(mySensorEventListener, sensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
 		}
 
 		// animate with ca30fps
@@ -446,7 +448,7 @@ public class GameActivity extends MapActivity {
 		}
 		
 		if (sersorrunning) {
-			mySensorManager.unregisterListener(mySensorEventListener);
+			sensorManager.unregisterListener(mySensorEventListener);
 		}
 		
 		try {
@@ -464,6 +466,7 @@ public class GameActivity extends MapActivity {
 
 	/**
 	 * uses current player location to place dots
+	 * uses a grid placed around the player and calculates from each gridpoint a route to the player
 	 */
 	private void createDots() {
 		GeoPoint routePos;
@@ -471,22 +474,22 @@ public class GameActivity extends MapActivity {
 		GeoPoint prevPos;
 		boolean nextRoute = false;
 		int cntRoute = 1;
-		radius = 10;
+		int radius = 10;
 		while (GameLogic.getInstance().getItems().size() <= GameLogic.getInstance().getMaxTargets()) {
 			radius = radius+5; 
 			for (int y = -radius; y <= radius; y = y + radius) {
 				for (int x = -radius; x <= radius; x = x + radius) {
 					try {
 
-						double geoLat = theGame.getPlayer().getLocation().getLatitudeE6() + (x * theGame.getGameRadius());
-						double geoLng = theGame.getPlayer().getLocation().getLongitudeE6() + (y * theGame.getGameRadius());
+						double geoLat = theGame.getPlayer().getPosition().getLatitudeE6() + (x * theGame.getGameRadius());
+						double geoLng = theGame.getPlayer().getPosition().getLongitudeE6() + (y * theGame.getGameRadius());
 
 						// cals route from player to grid position
 						routePos = new GeoPoint((int) (geoLat), (int) (geoLng));
 
-						String pairs[] = GameActivity.getDirectionData(routePos.getLatitudeE6() / 1E6 + "," + routePos.getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayer().getLocation()
+						String pairs[] = GameActivity.getDirectionData(routePos.getLatitudeE6() / 1E6 + "," + routePos.getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayer().getPosition()
 								.getLatitudeE6()
-								/ 1E6 + "," + GameLogic.getInstance().getPlayer().getLocation().getLongitudeE6() / 1E6);
+								/ 1E6 + "," + GameLogic.getInstance().getPlayer().getPosition().getLongitudeE6() / 1E6);
 						cntRoute = 1;
 						if(pairs.length<2) break;
 						String[] nextlngLat = pairs[cntRoute].split(",");
@@ -541,7 +544,7 @@ public class GameActivity extends MapActivity {
 							}
 							//Log.v("placeDot", dotPos.toString());
 
-							if (GameLogic.CalculationByDistance(theGame.getPlayer().getLocation(), routePos) > GameLogic.CalculationByDistance(theGame.getPlayer().getLocation(), dotPos)) {
+							if (GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), routePos) > GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), dotPos)) {
 								theGame.addItem(getApplicationContext(), locationManager, dotPos);
 							}
 						}
@@ -555,6 +558,12 @@ public class GameActivity extends MapActivity {
 
 	}
 
+	/**
+	 * calls maps.google.com to get a from srcPlace to destPlace (both can be geopoints)
+	 * @param srcPlace
+	 * @param destPlace
+	 * @return
+	 */
 	public static String[] getDirectionData(String srcPlace, String destPlace) {
 
 		srcPlace = java.net.URLEncoder.encode(srcPlace);
@@ -617,6 +626,10 @@ public class GameActivity extends MapActivity {
 		}
 	}
 
+	/**
+	 * add tank to game
+	 * tank gets a random position around user
+	 */
 	public void addTank() {
 		Double geoLat, geoLng;
 
@@ -627,28 +640,28 @@ public class GameActivity extends MapActivity {
 			int leftRight = (int) Math.floor((Math.random() * 2) + 1);
 			if (leftRight == 1) {
 				// left
-				geoLat = (double) (theGame.getPlayer().getLocation().getLatitudeE6() + ((-6 * theGame.getItemDistance())));
+				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((-6 * theGame.getItemDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLng = (double) (theGame.getPlayer().getLocation().getLongitudeE6() + ((rnd * theGame.getItemDistance())));
+				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((rnd * theGame.getItemDistance())));
 			} else {
 				// right
-				geoLat = (double) (theGame.getPlayer().getLocation().getLatitudeE6() + ((6 * theGame.getItemDistance())));
+				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((6 * theGame.getItemDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLng = (double) (theGame.getPlayer().getLocation().getLongitudeE6() + ((rnd * theGame.getItemDistance())));
+				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((rnd * theGame.getItemDistance())));
 			}
 		} else {
 			// top or down
 			int topDown = (int) Math.floor((Math.random() * 2) + 1);
 			if (topDown == 1) {
 				// top
-				geoLng = (double) (theGame.getPlayer().getLocation().getLongitudeE6() + ((6 * theGame.getItemDistance())));
+				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((6 * theGame.getItemDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLat = (double) (theGame.getPlayer().getLocation().getLatitudeE6() + ((rnd * theGame.getItemDistance())));
+				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((rnd * theGame.getItemDistance())));
 			} else {
 				// down
-				geoLng = (double) (theGame.getPlayer().getLocation().getLongitudeE6() + ((-6 * theGame.getItemDistance())));
+				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((-6 * theGame.getItemDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLat = (double) (theGame.getPlayer().getLocation().getLatitudeE6() + ((rnd * theGame.getItemDistance())));
+				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((rnd * theGame.getItemDistance())));
 			}
 		}
 
@@ -657,8 +670,8 @@ public class GameActivity extends MapActivity {
 
 		try {
 			// search nearest street for this point
-			String pairs[] = GameActivity.getDirectionData(point.getLatitudeE6() / 1E6 + "," + point.getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayer().getLocation().getLatitudeE6() / 1E6 + ","
-					+ GameLogic.getInstance().getPlayer().getLocation().getLongitudeE6() / 1E6);
+			String pairs[] = GameActivity.getDirectionData(point.getLatitudeE6() / 1E6 + "," + point.getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayer().getPosition().getLatitudeE6() / 1E6 + ","
+					+ GameLogic.getInstance().getPlayer().getPosition().getLongitudeE6() / 1E6);
 
 			String[] nextlngLat = pairs[0].split(",");
 
@@ -669,6 +682,9 @@ public class GameActivity extends MapActivity {
 		theGame.addTank(getApplicationContext(), locationManager, nextPos);
 	}
 
+	/**
+	 * refreshes UI if GameService says so
+	 */
 	private BroadcastReceiver updateUIReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -676,6 +692,9 @@ public class GameActivity extends MapActivity {
 		}
 	};
 
+	/**
+	 * calls add tank if GameService says so
+	 */
 	private BroadcastReceiver addTankReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -683,6 +702,9 @@ public class GameActivity extends MapActivity {
 		}
 	};
 
+	/**
+	 * connects to GameService (for timer events)
+	 */
 	private ServiceConnection onService = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName className, IBinder rawBinder) {
@@ -709,6 +731,9 @@ public class GameActivity extends MapActivity {
 		locationManager.setTestProviderLocation(provider, debugLocation);
 	}
 
+	/**
+	 * shows "really quit?" dialog to user
+	 */
 	@Override
 	public void onBackPressed() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -725,6 +750,9 @@ public class GameActivity extends MapActivity {
 		alert.show();
 	}
 	
+	/**
+	 * warning if GPS is disabled
+	 */
 	private void createGpsDisabledAlert() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Your GPS is disabled! Would you like to enable it?").setCancelable(false).setPositiveButton("Enable GPS", new DialogInterface.OnClickListener() {
@@ -743,11 +771,18 @@ public class GameActivity extends MapActivity {
 		alert.show();
 	}
 
+	/**
+	 * open location settings
+	 */
 	private void showGpsOptions() {
 		Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 		startActivity(gpsOptionsIntent);
 	}
 	
+	/**
+	 * checks if client is online
+	 * @return online status
+	 */
 	public boolean isOnline() {
 	    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -757,6 +792,9 @@ public class GameActivity extends MapActivity {
 	    return false;
 	}
 	
+	/**
+	 * warning if no internet connection is available
+	 */
 	private void createInternetAlert() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("No internet connection available").setCancelable(false).setPositiveButton("Enable Internet", new DialogInterface.OnClickListener() {
@@ -775,6 +813,9 @@ public class GameActivity extends MapActivity {
 		alert.show();
 	}
 	
+	/**
+	 * open connection settings
+	 */
 	private void showInternetOptions() {
 		Intent internetOptionsIntent = new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS);
 		startActivity(internetOptionsIntent);
