@@ -161,6 +161,7 @@ public class Tank {
 			++shotFrame;
 			if(shotFrame==20) {
 				GameLogic.getInstance().getPlayer().setAlive(false);
+				shootAnim=false;
 			}
 		} else {
 			if (currentFrame == 1) {

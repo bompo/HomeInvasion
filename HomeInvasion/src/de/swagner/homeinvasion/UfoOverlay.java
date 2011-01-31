@@ -105,7 +105,7 @@ public class UfoOverlay extends Overlay {
 				bmp_ufo_current = Images.getInstance().bmp_item_f13;
 			} else if (currentFrame == 27) {
 				bmp_ufo_current = Images.getInstance().getExplosionResult();
-			} else if (currentFrame == 500) {
+			} else if (currentFrame == 300) {
 				GameLogic.getInstance().gameOver(false);
 			}
 			++currentFrame;

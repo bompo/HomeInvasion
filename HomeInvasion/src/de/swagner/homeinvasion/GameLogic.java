@@ -19,7 +19,7 @@ public final class GameLogic {
 	
 	final static int TANK_SLOW = 10;
 	final static int TANK_MEDIUM = 20;
-	final static int TANK_FAST = 100;
+	final static int TANK_FAST = 30;
 	
 	final static int SHORT_LENGTH = 600;
 	final static int MEDIUM_LENGTH = 900;
