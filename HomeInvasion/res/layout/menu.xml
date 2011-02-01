@@ -57,7 +57,7 @@
 
 			<LinearLayout android:orientation="horizontal"
 				android:layout_width="fill_parent" android:layout_height="fill_parent"
-				android:layout_weight="50" android:layout_gravity="bottom" android:paddingTop="20dip"
+				android:layout_weight="50" android:layout_gravity="bottom" android:paddingTop="0dip"
 				android:background="@color/background2">
 				<ImageView style="@style/BackgroundImage"
 					android:contentDescription="@string/description_logo"

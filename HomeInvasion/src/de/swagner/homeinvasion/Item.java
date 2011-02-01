@@ -47,7 +47,13 @@ public class Item {
 	}
 
 	public void removeItemProximityAlert() {
-		shootAnim = true;
+		if(!GameLogic.getInstance().isAnimation()) {
+			bmp_item_current = Images.getInstance().getExplosionResult();
+			destroyedAnim=false; 
+			destroyed = true;
+		} else {
+			shootAnim = true;
+		}		
 		currentFrame = 0;
 		locationManager.removeProximityAlert(proximityIntent);
 	}

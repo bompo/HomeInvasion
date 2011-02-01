@@ -63,8 +63,8 @@ public class UfoOverlay extends Overlay {
 				canvas.drawBitmap(bmp_ufo_radius_current, matrix, null);	
 				
 				// draw shadow
-				matrix.setRotate(GameLogic.getInstance().getPlayer().getAnimDirection(), bmp_ufo_shadow_current.getWidth() / 2, bmp_ufo_shadow_current.getHeight() / 2);
-				matrix.postTranslate(point.x - (bmp_ufo_shadow_current.getWidth() / 2), point.y - (bmp_ufo_shadow_current.getHeight() / 2));
+				//matrix.setRotate(GameLogic.getInstance().getPlayer().getAnimDirection(), bmp_ufo_shadow_current.getWidth() / 2, bmp_ufo_shadow_current.getHeight() / 2);
+				matrix.setTranslate(point.x +30 - (bmp_ufo_shadow_current.getWidth() / 2), point.y +30- (bmp_ufo_shadow_current.getHeight() / 2));
 				canvas.drawBitmap(bmp_ufo_shadow_current, matrix, null);
 
 				// draw ufo
@@ -77,33 +77,33 @@ public class UfoOverlay extends Overlay {
 
 	public void update() {
 		if (!GameLogic.getInstance().getPlayer().isAlive()) {
-			if (currentFrame == 1) {
+			if (currentFrame == 21) {
 				bmp_ufo_current = Images.getInstance().bmp_item_f1;
-			} else if (currentFrame == 3) {
-				bmp_ufo_current = Images.getInstance().bmp_item_f2;
-			} else if (currentFrame == 5) {
-				bmp_ufo_current = Images.getInstance().bmp_item_f3;
-			} else if (currentFrame == 7) {
-				bmp_ufo_current = Images.getInstance().bmp_item_f4;
-			} else if (currentFrame == 9) {
-				bmp_ufo_current = Images.getInstance().bmp_item_f5;
-			} else if (currentFrame == 11) {
-				bmp_ufo_current = Images.getInstance().bmp_item_f6;
-			} else if (currentFrame == 13) {
-				bmp_ufo_current = Images.getInstance().bmp_item_f7;
-			} else if (currentFrame == 15) {
-				bmp_ufo_current = Images.getInstance().bmp_item_f8;
-			} else if (currentFrame == 17) {
-				bmp_ufo_current = Images.getInstance().bmp_item_f9;
-			} else if (currentFrame == 19) {
-				bmp_ufo_current = Images.getInstance().bmp_item_f10;
-			} else if (currentFrame == 21) {
-				bmp_ufo_current = Images.getInstance().bmp_item_f11;
 			} else if (currentFrame == 23) {
-				bmp_ufo_current = Images.getInstance().bmp_item_f12;
+				bmp_ufo_current = Images.getInstance().bmp_item_f2;
 			} else if (currentFrame == 25) {
-				bmp_ufo_current = Images.getInstance().bmp_item_f13;
+				bmp_ufo_current = Images.getInstance().bmp_item_f3;
 			} else if (currentFrame == 27) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f4;
+			} else if (currentFrame == 29) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f5;
+			} else if (currentFrame == 31) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f6;
+			} else if (currentFrame == 33) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f7;
+			} else if (currentFrame == 35) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f8;
+			} else if (currentFrame == 37) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f9;
+			} else if (currentFrame == 39) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f10;
+			} else if (currentFrame == 41) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f11;
+			} else if (currentFrame == 43) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f12;
+			} else if (currentFrame == 45) {
+				bmp_ufo_current = Images.getInstance().bmp_item_f13;
+			} else if (currentFrame == 47) {
 				bmp_ufo_current = Images.getInstance().getExplosionResult();
 			} else if (currentFrame == 300) {
 				GameLogic.getInstance().gameOver(false);

@@ -151,7 +151,7 @@ public final class Debug {
 		if (GameLogic.getInstance().getTimeLimit() - GameLogic.getInstance().getTimeLeft() < recordedPositions.size()) {
 			return recordedPositions.get(GameLogic.getInstance().getTimeLimit() - GameLogic.getInstance().getTimeLeft());
 		}
-		return null;
+		return recordedPositions.get(recordedPositions.size()-1);
 	}
 
 	public Float getCurrentRecordedDirection() {

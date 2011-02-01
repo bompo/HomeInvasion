@@ -99,7 +99,7 @@
 						style="@style/SettingsTitle" android:textStyle="bold"></TextView>
 					<TextView style="@style/SettingsText" android:text="@string/settingsDifficultyText"></TextView>
 					<Spinner style="@style/SettingsSpinner" android:prompt="@string/settingsSpinnerLabel"
-						android:id="@+id/settingsSpinner" android:entries="@array/settingsSpinnerValues" />
+						android:id="@+id/settingsSpinner" android:entries="@array/difficulty" />
 				</LinearLayout>
 
 
@@ -117,7 +117,7 @@
 					<TextView style="@style/SettingsText" android:text="@string/settingsTimeText"></TextView>
 
 					<Spinner style="@style/SettingsSpinner" android:prompt="@string/settingsTimeSpinnerLabel"
-						android:id="@+id/settingsTimeSpinner" android:entries="@array/settingsTimeSpinnerValues" />
+						android:id="@+id/settingsTimeSpinner" android:entries="@array/timelimit" />
 				</LinearLayout>
 			</LinearLayout>
 

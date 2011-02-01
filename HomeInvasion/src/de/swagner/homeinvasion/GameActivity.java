@@ -71,8 +71,10 @@ public class GameActivity extends MapActivity {
 	private UfoOverlay ufoOverlay;
 	private ItemOverlay itemOverlay;
 	private TankOverlay tankOverlay;
+	
 	private TextView tv_points;
 	private TextView tv_time;
+	private TextView tv_wave;
 
 	private GameLogic theGame;
 	private GameService gameService;
@@ -104,6 +106,7 @@ public class GameActivity extends MapActivity {
 		if (!GameLogic.getInstance().isGameReady()) {
 
 			tv_points = (TextView) findViewById(R.id.tv_points);
+			tv_wave = (TextView) findViewById(R.id.tv_wave);
 
 			String context = Context.LOCATION_SERVICE;
 			locationManager = (LocationManager) getSystemService(context);
@@ -612,7 +615,8 @@ public class GameActivity extends MapActivity {
 		if (theGame.isGameReady()) {
 			theGame.decreaseTime();
 			tv_time.setText(Math.round(theGame.getTimeLeft() / 60) + "min " + String.format("%02d", theGame.getTimeLeft() % 60) + "sec");
-			tv_points.setText(theGame.getPoints() + " points");
+			tv_points.setText("Points " + theGame.getPoints());
+			tv_wave.setText("Wave " + theGame.getWave());
 			mapView.postInvalidate();
 		}
 		if (theGame.isGameReady() && theGame.isGameOver()) {

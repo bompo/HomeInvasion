@@ -17,9 +17,9 @@ public final class GameLogic {
 	final static int MEDIUM_MODE = 35;
 	final static int HARD_MODE = 55;
 	
-	final static int TANK_SLOW = 10;
-	final static int TANK_MEDIUM = 20;
-	final static int TANK_FAST = 30;
+	final static int TANK_SLOW = 15;
+	final static int TANK_MEDIUM = 25;
+	final static int TANK_FAST = 35;
 	
 	final static int SHORT_LENGTH = 600;
 	final static int MEDIUM_LENGTH = 900;
@@ -45,6 +45,8 @@ public final class GameLogic {
 	private boolean gameOver;
 	private boolean victory;
 
+	private int wave;
+	
 	//game settings vars
 	private boolean sound;
 	private boolean animation;
@@ -67,6 +69,7 @@ public final class GameLogic {
 		gameOver = false;
 		Tank.id = 0;
 		Item.id = 0;
+		wave=0;
 		
 		maxTargets = 50;
 
@@ -125,6 +128,7 @@ public final class GameLogic {
 	public boolean addTank(Context context, LocationManager locationManager, GeoPoint geoPoint) {
 		if (tanks.size() > 3)
 			return false;
+		incWave();
 		Tank newTank = new Tank(context, locationManager, geoPoint);
 		return tanks.add(newTank);
 	}
@@ -226,6 +230,7 @@ public final class GameLogic {
 		gameOver = false;
 		Tank.id = 0;
 		Item.id = 0;
+		wave = 0;
 		player.setAlive(true);
 	}
 
@@ -292,6 +297,14 @@ public final class GameLogic {
 	
 	public void switchSatellite() {
 		satellite = !satellite;
+	}
+	
+	public void incWave() {
+		++wave;
+	}
+	
+	public int getWave() {
+		return wave;
 	}
 	
 	public static GeoPoint interpolatePos(GeoPoint p1, GeoPoint p2, double f) {

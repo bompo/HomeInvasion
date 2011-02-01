@@ -20,6 +20,9 @@ public class TankProximityIntentReceiver extends BroadcastReceiver {
 					tank.removeTankProximityAlert();
 					GameLogic.getInstance().getPlayer().setAlive(false);
 					tank.setShootAnim(true);
+					if(!GameLogic.getInstance().isAnimation()) {
+						GameLogic.getInstance().gameOver(false);
+					}
 					if(GameLogic.getInstance().isSound()) {
 						MediaPlayer mp = MediaPlayer.create(context, R.raw.gameover);
 						mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {

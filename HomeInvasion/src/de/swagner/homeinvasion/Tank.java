@@ -159,6 +159,7 @@ public class Tank {
 	public void update() {
 		if(shootAnim) {
 			++shotFrame;
+			bmp_tank_current = Images.getInstance().bmp_tank_f1;
 			if(shotFrame==20) {
 				GameLogic.getInstance().getPlayer().setAlive(false);
 				shootAnim=false;
@@ -401,7 +402,7 @@ public class Tank {
 	}
 
 	public GeoPoint getShootAnimPosition() {
-		return GameLogic.interpolatePos(getPosition(),GameLogic.getInstance().getPlayer().getPosition(), shotFrame/20.);
+		return GameLogic.interpolatePos(getAnimPosition(),GameLogic.getInstance().getPlayer().getPosition(), shotFrame/20.);
 	}
 
 	public void setShootAnim(boolean b) {
