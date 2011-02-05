@@ -243,7 +243,7 @@ public class GameActivity extends MapActivity {
 								mProgress.setVisibility(View.GONE);
 								mapView.invalidate();
 								if (GameLogic.getInstance().isSound()) {
-									MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.powerup);
+									MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.intro);
 									try {
 										mp.prepare();
 									} catch (IllegalStateException e) {
