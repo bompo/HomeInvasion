@@ -126,8 +126,6 @@ public final class GameLogic {
 	}
 
 	public boolean addTank(Context context, LocationManager locationManager, GeoPoint geoPoint) {
-		if (tanks.size() > 3)
-			return false;
 		incWave();
 		Tank newTank = new Tank(context, locationManager, geoPoint);
 		return tanks.add(newTank);
@@ -313,8 +311,34 @@ public final class GameLogic {
 		return new GeoPoint(p1.getLatitudeE6() + newLat, p1.getLongitudeE6() + newLog);
 	}
 
-	public static float interpolateDir(float oldDir, float newDir, double f) {
-		int diffDir = (int) ((newDir - oldDir) * f);
-		return (oldDir + diffDir);
+	public static float interpolateDir(float start, float end, float f) {
+		 float difference = Math.abs(end - start);
+	        if (difference > 180)
+	        {
+	            // We need to add on to one of the values.
+	            if (end > start)
+	            {
+	                // We'll add it on to start...
+	                start += 360;
+	            }
+	            else
+	            {
+	                // Add it on to end.
+	                end += 360;
+	            }
+	        }
+
+	        // Interpolate it.
+	        float value = (start + ((end - start) * f));
+
+	        // Wrap it..
+	        float rangeZero = 360;
+
+	        if (value >= 0 && value <= 360)
+	            return value;
+
+	        return (value % rangeZero);
 	}
+	
+
 }

@@ -63,7 +63,7 @@ public class Tank {
 		this.position = geoPoint;
 		this.locationManager = locationManager;
 		tankProximityIntent = new Intent(GameActivity.tankProximityIntentAction);
-		tankProximityIntent.putExtra("ghostID", id);
+		tankProximityIntent.putExtra("tankID", id);
 		proximityIntent = PendingIntent.getBroadcast(context, (int) (id + 1E6), tankProximityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 		addTankProximityAlert();
 		tankID = id;
@@ -221,7 +221,7 @@ public class Tank {
 		}
 
 		if (isAnimateDirection()) {
-			setAnimDirection(GameLogic.interpolateDir(getLastDirection(), getDirection(), animDirectionCounter / 30.));
+			setAnimDirection(GameLogic.interpolateDir(getLastDirection(), getDirection(), (float) (animDirectionCounter / 30.)));
 			animDirectionCounter = animDirectionCounter + 1;
 			if (animDirectionCounter == 30) {
 				animDirectionCounter = 1;

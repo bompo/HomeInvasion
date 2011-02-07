@@ -10,7 +10,7 @@ public class TankProximityIntentReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		// String key = LocationManager.KEY_PROXIMITY_ENTERING;
 		// Boolean entering = intent.getBooleanExtra(key, false);
-		int ghostID = intent.getIntExtra("ghostID", -1);
+		int ghostID = intent.getIntExtra("tankID", -1);
 
 		if (GameLogic.getInstance().isGameReady()) {
 			

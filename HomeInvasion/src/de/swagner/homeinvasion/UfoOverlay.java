@@ -161,7 +161,7 @@ public class UfoOverlay extends Overlay {
 			}
 
 			if (GameLogic.getInstance().getPlayer().isAnimateDirection()) {
-				GameLogic.getInstance().getPlayer().setAnimDirection(GameLogic.interpolateDir(GameLogic.getInstance().getPlayer().getLastDirection(), GameLogic.getInstance().getPlayer().getDirection(), animPlayerDirectionCounter / 30.));
+				GameLogic.getInstance().getPlayer().setAnimDirection(GameLogic.interpolateDir(GameLogic.getInstance().getPlayer().getLastDirection(), GameLogic.getInstance().getPlayer().getDirection(), (float) (animPlayerDirectionCounter / 30.)));
 				animPlayerDirectionCounter = animPlayerDirectionCounter + 1;
 				if (animPlayerDirectionCounter == 30) {
 					animPlayerDirectionCounter = 1;

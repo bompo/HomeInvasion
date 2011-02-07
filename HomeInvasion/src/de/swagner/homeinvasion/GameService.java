@@ -53,6 +53,27 @@ public class GameService extends Service {
 				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 300) {
 					sendBroadcast(addTankBroadcast);
 				}
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 400) {
+					sendBroadcast(addTankBroadcast);
+				}
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 500) {
+					sendBroadcast(addTankBroadcast);
+				}
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 600) {
+					sendBroadcast(addTankBroadcast);
+				}
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 700) {
+					sendBroadcast(addTankBroadcast);
+				}
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 800) {
+					sendBroadcast(addTankBroadcast);
+				}
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 900) {
+					sendBroadcast(addTankBroadcast);
+				}
+				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 1000) {
+					sendBroadcast(addTankBroadcast);
+				}
 				
 				tankAI();
 				
