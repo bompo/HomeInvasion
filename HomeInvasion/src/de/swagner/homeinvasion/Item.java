@@ -55,7 +55,11 @@ public class Item {
 			shootAnim = true;
 		}		
 		currentFrame = 0;
-		locationManager.removeProximityAlert(proximityIntent);
+		try{
+			locationManager.removeProximityAlert(proximityIntent);
+		} catch (Exception e) {
+			removeItemProximityAlert();
+		}
 	}
 
 	public int getID() {

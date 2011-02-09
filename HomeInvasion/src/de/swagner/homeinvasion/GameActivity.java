@@ -130,25 +130,17 @@ public class GameActivity extends MapActivity {
 				mapView.setSatellite(false);
 			}
 			mapController = mapView.getController();
-
-			// find best location provider
-			Criteria criteria = new Criteria();
-			criteria.setAccuracy(Criteria.ACCURACY_FINE);
-			criteria.setAltitudeRequired(false);
-			criteria.setBearingRequired(false);
-			criteria.setCostAllowed(true);
-			criteria.setPowerRequirement(Criteria.POWER_LOW);
-			provider = locationManager.getBestProvider(criteria, true);
-			//provider = LocationManager.GPS_PROVIDER;
+		
+			provider = LocationManager.GPS_PROVIDER;
 
 			//DEBUG (remove for release)
 			try {
 				locationManager.removeTestProvider(provider);
-			} catch (IllegalArgumentException e) {
-
+			} catch (Exception e) {
+				
 			}
 
-			if (provider==null) {
+			if (!locationManager.isProviderEnabled(provider)) {
 				createGpsDisabledAlert();
 				return;
 			}
@@ -162,6 +154,17 @@ public class GameActivity extends MapActivity {
 			updateWithNewLocation(currentLocation);
 			
 			locationManager.requestLocationUpdates(provider, 1000, 1f, locationListener);
+			
+			// find best location provider
+			Criteria criteria = new Criteria();
+			criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+			criteria.setAltitudeRequired(false);
+			criteria.setBearingRequired(false);
+			criteria.setCostAllowed(true);
+			criteria.setPowerRequirement(Criteria.POWER_LOW);
+			provider = locationManager.getBestProvider(criteria, true);
+					
+			locationManager.requestLocationUpdates(provider, 1000, 1f, locationCoarseListener);
 			
 			if (!Debug.getInstance().getParsedMode()) {
 				// sensor setup
@@ -200,7 +203,7 @@ public class GameActivity extends MapActivity {
 
 			// Create a Dialog to let the User know
 			// that we're waiting for a GPS Fix
-			dialog = ProgressDialog.show(GameActivity.this, "Preparing Invasion...", "Retrieving current Position... Please make sure that GPS is enabled and your internet connection works", true);
+			dialog = ProgressDialog.show(GameActivity.this, "Preparing Invasion...", "Retrieving current Position... Please make sure that GPS is enabled and your internet connection is working. This game can only played outside.", true);
 			dialog.setCancelable(true);
 			dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
 				@Override
@@ -336,6 +339,32 @@ public class GameActivity extends MapActivity {
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 		}
 	};
+	
+	/**
+	 * listener for location changes
+	 */
+	private final LocationListener locationCoarseListener = new LocationListener() {
+		@Override
+		public void onLocationChanged(Location location) {
+			updateWithNewLocation(location);
+		}
+
+		@Override
+		public void onProviderDisabled(String provider) {
+			try {
+				locationManager.removeUpdates(locationCoarseListener);
+			} catch (Exception e) {
+			}
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
+	};
 
 	/**
 	 * sensor listener
@@ -356,6 +385,12 @@ public class GameActivity extends MapActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 
+		try{
+			locationFix.stop();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 		theGame.shutdownGame();
 		
 		unregisterReceiver(addTankReceiver);
@@ -376,6 +411,7 @@ public class GameActivity extends MapActivity {
 
 		try {
 			locationManager.removeUpdates(locationListener);
+			locationManager.removeUpdates(locationCoarseListener);
 		} catch (Exception e) {
 		}
 
@@ -435,6 +471,7 @@ public class GameActivity extends MapActivity {
 		
 		try {
 			locationManager.removeUpdates(locationListener);
+			locationManager.removeUpdates(locationCoarseListener);
 		} catch (Exception e) {
 		}
 		locationManager.requestLocationUpdates(provider, 1000, 1f, locationListener);
@@ -457,6 +494,7 @@ public class GameActivity extends MapActivity {
 		
 		try {
 			locationManager.removeUpdates(locationListener);
+			locationManager.removeUpdates(locationCoarseListener);
 		} catch (Exception e) {
 		}		
 	}
@@ -548,8 +586,10 @@ public class GameActivity extends MapActivity {
 							}
 							//Log.v("placeDot", dotPos.toString());
 
-							if (GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), routePos) > GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), dotPos)) {
-								theGame.addItem(getApplicationContext(), locationManager, dotPos);
+							if(!this.isFinishing()) {
+								if (GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), routePos) > GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), dotPos)) {
+									theGame.addItem(getApplicationContext(), locationManager, dotPos);
+								}
 							}
 						}
 					} catch (Exception e) {

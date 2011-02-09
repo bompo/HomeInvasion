@@ -21,6 +21,13 @@ public class MenuActivity extends Activity {
 		GameLogic.getInstance().setAnimation(getSharedPreferences(GameLogic.prefs,MODE_PRIVATE).getBoolean("Animation", true));
 		GameLogic.getInstance().setSatellite(getSharedPreferences(GameLogic.prefs,MODE_PRIVATE).getBoolean("Satellite", true));
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		GameLogic.getInstance().shutdownGame();
+	}
 
 	/** Handle "gameStart" action. */
 	public void onGameStartClick(View v) {

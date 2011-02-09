@@ -106,7 +106,11 @@ public class Tank {
 	}
 
 	public void removeTankProximityAlert() {
-		locationManager.removeProximityAlert(proximityIntent);
+		try {
+			locationManager.removeProximityAlert(proximityIntent);
+		} catch (Exception e) {
+			removeTankProximityAlert();
+		}
 	}
 
 	public int getID() {
