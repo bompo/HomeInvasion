@@ -100,14 +100,14 @@ public class SettingsActivity extends Activity {
 	public void setGameLength(String choice) {
 		final Editor editor = getSharedPreferences(GameLogic.prefs,MODE_PRIVATE).edit();
 
-		if (choice.equals("10 Minutes")) {
+		if (choice.equals("15 Minutes")) {
 			GameLogic.getInstance().setTimeLimit(GameLogic.SHORT_LENGTH);
 			GameLogic.getInstance().setMaxTargets(GameLogic.EASY_MODE);
-		} else if (choice.equals("15 Minutes")) {
+		} else if (choice.equals("20 Minutes")) {
 			GameLogic.getInstance().setTimeLimit(GameLogic.MEDIUM_LENGTH);
 			GameLogic.getInstance().setMaxTargets(GameLogic.MEDIUM_MODE);
 
-		} else if (choice.equals("20 Minutes")) {
+		} else if (choice.equals("25 Minutes")) {
 			GameLogic.getInstance().setTimeLimit(GameLogic.LONG_LENGTH);
 			GameLogic.getInstance().setMaxTargets(GameLogic.HARD_MODE);
 		}

@@ -17,13 +17,13 @@ public final class GameLogic {
 	final static int MEDIUM_MODE = 35;
 	final static int HARD_MODE = 55;
 	
-	final static int TANK_SLOW = 15;
-	final static int TANK_MEDIUM = 25;
-	final static int TANK_FAST = 35;
+	final static int TANK_SLOW = 12;
+	final static int TANK_MEDIUM = 22;
+	final static int TANK_FAST = 32;
 	
-	final static int SHORT_LENGTH = 600;
-	final static int MEDIUM_LENGTH = 900;
-	final static int LONG_LENGTH = 1200;
+	final static int SHORT_LENGTH = 900;
+	final static int MEDIUM_LENGTH = 1200;
+	final static int LONG_LENGTH = 1500;
 	
 	final static String prefs = "Settings";
 
@@ -62,7 +62,7 @@ public final class GameLogic {
 		timeLeft = timeLimit;
 		gameRadius = 100;
 		itemRadius = 55;
-		tankRadius = 75;
+		tankRadius = 65;
 		itemPlacementDistance = 400;
 		tankSpeed = 15;
 		victory = false;

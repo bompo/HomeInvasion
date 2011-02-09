@@ -139,6 +139,7 @@ public class GameActivity extends MapActivity {
 			criteria.setCostAllowed(true);
 			criteria.setPowerRequirement(Criteria.POWER_LOW);
 			provider = locationManager.getBestProvider(criteria, true);
+			//provider = LocationManager.GPS_PROVIDER;
 
 			//DEBUG (remove for release)
 			try {
@@ -299,7 +300,7 @@ public class GameActivity extends MapActivity {
 	}
 
 	private void updateWithNewLocation(Location location) {
-		if (isBetterLocation(location, currentLocation)) {
+		if (isBetterLocation(location, currentLocation) && GameLogic.getInstance().getPlayer().isAlive()) {
 			currentLocation = location;
 		
 			// Update the map location.
