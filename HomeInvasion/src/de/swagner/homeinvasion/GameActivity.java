@@ -779,6 +779,7 @@ public class GameActivity extends MapActivity {
 		debugLocation.setTime(System.currentTimeMillis());
 		debugLocation.setLatitude(latitude);
 		debugLocation.setLongitude(longitude);
+		debugLocation.setAccuracy(1.0f);
 		locationManager.setTestProviderLocation(provider, debugLocation);
 	}
 
