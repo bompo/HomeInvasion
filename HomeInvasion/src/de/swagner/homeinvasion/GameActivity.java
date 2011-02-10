@@ -91,6 +91,7 @@ public class GameActivity extends MapActivity {
 	private Location debugLocation;
 
 	private String provider;
+	private String coarseProvider;
 
 	private Timer animTimer = new Timer();
 	Thread locationFix;	
@@ -131,6 +132,19 @@ public class GameActivity extends MapActivity {
 			}
 			mapController = mapView.getController();
 		
+			
+			// find quick location provider
+			Criteria criteria = new Criteria();
+			criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+			criteria.setAltitudeRequired(false);
+			criteria.setBearingRequired(false);
+			criteria.setCostAllowed(true);
+			criteria.setPowerRequirement(Criteria.POWER_LOW);
+			coarseProvider = locationManager.getBestProvider(criteria, true);
+					
+			locationManager.requestLocationUpdates(coarseProvider, 1000, 1f, locationCoarseListener);
+			
+			
 			provider = LocationManager.GPS_PROVIDER;
 
 			//DEBUG (remove for release)
@@ -154,18 +168,7 @@ public class GameActivity extends MapActivity {
 			updateWithNewLocation(currentLocation);
 			
 			locationManager.requestLocationUpdates(provider, 1000, 1f, locationListener);
-			
-			// find best location provider
-			Criteria criteria = new Criteria();
-			criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-			criteria.setAltitudeRequired(false);
-			criteria.setBearingRequired(false);
-			criteria.setCostAllowed(true);
-			criteria.setPowerRequirement(Criteria.POWER_LOW);
-			provider = locationManager.getBestProvider(criteria, true);
-					
-			locationManager.requestLocationUpdates(provider, 1000, 1f, locationCoarseListener);
-			
+						
 			if (!Debug.getInstance().getParsedMode()) {
 				// sensor setup
 				sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -203,7 +206,7 @@ public class GameActivity extends MapActivity {
 
 			// Create a Dialog to let the User know
 			// that we're waiting for a GPS Fix
-			dialog = ProgressDialog.show(GameActivity.this, "Preparing Invasion...", "Retrieving current Position... Please make sure that GPS is enabled and your internet connection is working. This game can only played outside.", true);
+			dialog = ProgressDialog.show(GameActivity.this, "Preparing Invasion...", "Retrieving current Position... Please make sure that GPS is enabled and your internet connection is working. This game can only be played outside.", true);
 			dialog.setCancelable(true);
 			dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
 				@Override
@@ -306,6 +309,8 @@ public class GameActivity extends MapActivity {
 		if (isBetterLocation(location, currentLocation) && GameLogic.getInstance().getPlayer().isAlive()) {
 			currentLocation = location;
 		
+			GameLogic.getInstance().setCurrentLocation(currentLocation);
+			
 			// Update the map location.
 			GeoPoint point = new GeoPoint((int) (currentLocation.getLatitude() * 1E6), (int) (currentLocation.getLongitude() * 1E6));
 
@@ -459,7 +464,7 @@ public class GameActivity extends MapActivity {
 			} catch (Exception e) {}
 		}
 		
-		if (provider==null) {
+		if (!locationManager.isProviderEnabled(provider)) {
 			createGpsDisabledAlert();
 			return;
 		}
@@ -474,6 +479,7 @@ public class GameActivity extends MapActivity {
 			locationManager.removeUpdates(locationCoarseListener);
 		} catch (Exception e) {
 		}
+		locationManager.requestLocationUpdates(coarseProvider, 1000, 1f, locationCoarseListener);
 		locationManager.requestLocationUpdates(provider, 1000, 1f, locationListener);
 	}
 	

@@ -47,6 +47,9 @@ public final class GameLogic {
 
 	private int wave;
 	
+	//need this for proximity accuracy check
+	private Location currentLocation;
+	
 	//game settings vars
 	private boolean sound;
 	private boolean animation;
@@ -338,6 +341,14 @@ public final class GameLogic {
 	            return value;
 
 	        return (value % rangeZero);
+	}
+
+	public void setCurrentLocation(Location currentLocation) {
+		this.currentLocation = currentLocation;		
+	}
+	
+	public Location getCurrentLocation() {
+		return currentLocation;		
 	}
 	
 

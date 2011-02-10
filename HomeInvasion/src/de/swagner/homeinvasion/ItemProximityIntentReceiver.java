@@ -14,6 +14,9 @@ public class ItemProximityIntentReceiver extends BroadcastReceiver {
 		int dotID = intent.getIntExtra("dotID", -1);
 
 		if (GameLogic.getInstance().isGameReady()) {
+			
+			if(!GameLogic.getInstance().getCurrentLocation().hasAccuracy() || GameLogic.getInstance().getCurrentLocation().getAccuracy()>20) return;
+			
 			GameLogic.getInstance().incPoints();
 			
 			if(GameLogic.getInstance().isSound()) {

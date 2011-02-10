@@ -14,6 +14,8 @@ public class TankProximityIntentReceiver extends BroadcastReceiver {
 
 		if (GameLogic.getInstance().isGameReady()) {
 			
+			if(!GameLogic.getInstance().getCurrentLocation().hasAccuracy() || GameLogic.getInstance().getCurrentLocation().getAccuracy()>20) return;
+			
 			//don't really need this here...
 			for (Tank tank : GameLogic.getInstance().getTanks()) {
 				if (tank.getID() == ghostID) {
