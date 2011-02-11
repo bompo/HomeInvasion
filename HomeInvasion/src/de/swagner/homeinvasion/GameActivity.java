@@ -79,6 +79,8 @@ public class GameActivity extends MapActivity {
 	private GameLogic theGame;
 	private GameService gameService;
 	private Intent gameServiceIntent;
+	
+	private boolean inDialog = false;
 
 	public static String itemsProximityIntentAction = new String("de.swagner.homeinvasion.item.PROXIMITY_ALERT");
 	public static String tankProximityIntentAction = new String("de.swagner.homeinvasion.tank.PROXIMITY_ALERT");
@@ -141,10 +143,11 @@ public class GameActivity extends MapActivity {
 			criteria.setCostAllowed(true);
 			criteria.setPowerRequirement(Criteria.POWER_LOW);
 			coarseProvider = locationManager.getBestProvider(criteria, true);
-					
-			locationManager.requestLocationUpdates(coarseProvider, 1000, 1f, locationCoarseListener);
-			
-			
+								
+			if (coarseProvider!=null && locationManager.isProviderEnabled(coarseProvider)) {
+				locationManager.requestLocationUpdates(coarseProvider, 1000, 1f, locationCoarseListener);
+			}
+						
 			provider = LocationManager.GPS_PROVIDER;
 
 			//DEBUG (remove for release)
@@ -154,20 +157,19 @@ public class GameActivity extends MapActivity {
 				
 			}
 
-			if (!locationManager.isProviderEnabled(provider)) {
+			if (provider==null || !locationManager.isProviderEnabled(provider)) {
 				createGpsDisabledAlert();
 				return;
-			}
+			} else {
+				currentLocation = locationManager.getLastKnownLocation(provider);
+				updateWithNewLocation(currentLocation);
+				locationManager.requestLocationUpdates(provider, 1000, 1f, locationListener);
+			}	
 			
 			if(!isOnline()) {
 				createInternetAlert();
 				return;
-			}
-			
-			currentLocation = locationManager.getLastKnownLocation(provider);
-			updateWithNewLocation(currentLocation);
-			
-			locationManager.requestLocationUpdates(provider, 1000, 1f, locationListener);
+			}			
 						
 			if (!Debug.getInstance().getParsedMode()) {
 				// sensor setup
@@ -231,14 +233,15 @@ public class GameActivity extends MapActivity {
 							try {
 								Thread.sleep(1000);
 							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								return;
 							}
 						}
 
 						updateWithNewLocation(currentLocation);
 						
 						createDots();
+						if(locationFix.isInterrupted()) return;
+						
 						// Update the progress bar
 						mHandler.post(new Runnable() {
 							@Override
@@ -390,10 +393,8 @@ public class GameActivity extends MapActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 
-		try{
-			locationFix.stop();
-		} catch (Exception e) {
-			// TODO: handle exception
+		if(locationFix!=null && locationFix.isAlive()) {
+			locationFix.interrupt();
 		}
 		
 		theGame.shutdownGame();
@@ -464,23 +465,28 @@ public class GameActivity extends MapActivity {
 			} catch (Exception e) {}
 		}
 		
-		if (!locationManager.isProviderEnabled(provider)) {
-			createGpsDisabledAlert();
-			return;
-		}
-		
-		if(!isOnline()) {
-			createInternetAlert();
-			return;
-		}
-		
 		try {
 			locationManager.removeUpdates(locationListener);
 			locationManager.removeUpdates(locationCoarseListener);
 		} catch (Exception e) {
 		}
-		locationManager.requestLocationUpdates(coarseProvider, 1000, 1f, locationCoarseListener);
-		locationManager.requestLocationUpdates(provider, 1000, 1f, locationListener);
+		
+		if (coarseProvider!=null && locationManager.isProviderEnabled(coarseProvider)) {
+			locationManager.requestLocationUpdates(coarseProvider, 1000, 1f, locationCoarseListener);
+		}
+		
+		if (provider==null || !locationManager.isProviderEnabled(provider)) {
+			createGpsDisabledAlert();
+			return;
+		} else {
+			locationManager.requestLocationUpdates(provider, 1000, 1f, locationListener);
+		}		
+
+		
+		if(!isOnline()) {
+			createInternetAlert();
+			return;
+		}
 	}
 	
 	@Override
@@ -527,6 +533,7 @@ public class GameActivity extends MapActivity {
 			radius = radius+5; 
 			for (int y = -radius; y <= radius; y = y + radius) {
 				for (int x = -radius; x <= radius; x = x + radius) {
+					if(locationFix.isInterrupted()) return;
 					try {
 
 						double geoLat = theGame.getPlayer().getPosition().getLatitudeE6() + (x * theGame.getGameRadius());
@@ -788,39 +795,48 @@ public class GameActivity extends MapActivity {
 	 */
 	@Override
 	public void onBackPressed() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Really quit current game? All your progress will be lost").setCancelable(false).setPositiveButton("Quit", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				finish();
-			}
-		});
-		builder.setNegativeButton("Resume game", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-			}
-		});
-		AlertDialog alert = builder.create();
-		alert.show();
+		if (!inDialog) {
+			inDialog = true;
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Really quit current game? All your progress will be lost").setCancelable(false).setPositiveButton("Quit", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					inDialog = false;
+					finish();
+				}
+			});
+			builder.setNegativeButton("Resume game", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					inDialog = false;
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
+		}
 	}
 	
 	/**
 	 * warning if GPS is disabled
 	 */
 	private void createGpsDisabledAlert() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Your GPS is disabled! Would you like to enable it?").setCancelable(false).setPositiveButton("Enable GPS", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				showGpsOptions();
-				finish();
-			}
-		});
-		builder.setNegativeButton("Do nothing", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-				finish();
-			}
-		});
-		AlertDialog alert = builder.create();
-		alert.show();
+		if(!inDialog) {
+			inDialog =true;
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Your GPS is disabled! Would you like to enable it?").setCancelable(false).setPositiveButton("Enable GPS", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					inDialog = false;
+					showGpsOptions();
+					finish();
+				}
+			});
+			builder.setNegativeButton("Do nothing", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					inDialog = false;
+					finish();
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
+		}
 	}
 
 	/**
@@ -843,26 +859,30 @@ public class GameActivity extends MapActivity {
 	    }
 	    return false;
 	}
-	
+
 	/**
 	 * warning if no internet connection is available
 	 */
 	private void createInternetAlert() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("No internet connection available").setCancelable(false).setPositiveButton("Enable Internet", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				showInternetOptions();
-				finish();
-			}
-		});
-		builder.setNegativeButton("Do nothing", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-				finish();
-			}
-		});
-		AlertDialog alert = builder.create();
-		alert.show();
+		if (!inDialog) {
+			inDialog = true;
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("No internet connection available").setCancelable(false).setPositiveButton("Enable Internet", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					inDialog = false;
+					showInternetOptions();
+					finish();
+				}
+			});
+			builder.setNegativeButton("Do nothing", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					inDialog = false;
+					finish();
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
+		}
 	}
 	
 	/**
