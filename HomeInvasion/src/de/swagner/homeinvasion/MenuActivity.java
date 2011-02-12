@@ -50,7 +50,7 @@ public class MenuActivity extends Activity {
 	
 	/** Handle "sound" action. */
 	public void onSoundClick(View v) {
-		final Editor editor = getPreferences(MODE_PRIVATE).edit();
+		Editor editor = getSharedPreferences(GameLogic.prefs,MODE_PRIVATE).edit();
 		GameLogic.getInstance().switchSound();
 		refreshSoundButton();	
 		editor.putBoolean("SoundOnOff", GameLogic.getInstance().isSound());

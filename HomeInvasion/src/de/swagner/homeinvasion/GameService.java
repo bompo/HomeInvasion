@@ -71,9 +71,6 @@ public class GameService extends Service {
 				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 900) {
 					sendBroadcast(addTankBroadcast);
 				}
-				if (GameLogic.getInstance().getTimeLeft() == GameLogic.getInstance().getTimeLimit() - 1000) {
-					sendBroadcast(addTankBroadcast);
-				}
 				
 				tankAI();
 				

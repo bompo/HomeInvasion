@@ -444,6 +444,7 @@ public class GameActivity extends MapActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		if(inDialog) return;
 		
 		if (sersorrunning) {
 			sensorManager.registerListener(mySensorEventListener, sensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
