@@ -16,21 +16,43 @@
 
 		<View style="@style/TitleBarSpring" />
 	</LinearLayout>
+	<ScrollView android:id="@+id/ScrollView01"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<LinearLayout android:orientation="vertical"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" android:padding="6dip" android:background="@color/background1">
 
-	<LinearLayout android:orientation="vertical"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_weight="1" android:padding="6dip" android:background="@color/background1">
+			<TextView android:paddingTop="20dip"
+				android:text="Aliens invade your neighborhood and you are one of them! You control your spaceship by walking outside in your neighborhood. Yes! You have to go outside to play this game. To play, you need a constant GPS signal, a working internet connection and some nearby roads."
+				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+			<TextView
+				android:text="Your mission is to destroy all the targets that your overlords have placed. Those are indicated through green glowing dots. To destroy them you have to get them into your laser range. For each destroyed target you will get a point. But beware! Military is informed and trys to stop you. Don't get into the fire range of the tanks or they will destroy you."
+				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 
-		<TextView android:paddingTop="20dip" android:text="Aliens invade your neighborhood and you are one of them! You control your spaceship by actual walking outside in your neighborhood. To play the game you need a constant GPS signal and a working internet connection and some nearby roads."
-			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+			<TextView android:paddingTop="20dip" android:textStyle="bold"
+				android:text="WARNING!" android:layout_width="wrap_content"
+				android:layout_height="wrap_content"></TextView>
+			<TextView
+				android:text="Don't play this game on a busy road or while driving! Don't put yourself in danger! Obey the traffic rules and regulations!"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 
-		<TextView android:text="Your mission is to destroy all the targets that your overlords have placed. Those are indicated through green glowing dots. To destory them you have to get them into your laser range. For each destroyed target you will get a point. But beware! Military is informed and trys to stop you. Don't get into the fire range of the tanks or they will destroy you."
-			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-			
-		<TextView android:paddingTop="20dip" android:textStyle="bold" android:text="WARNING!"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-		<TextView android:text="Don't play this game on a busy road or while driving! Don't put yourself in danger! Obey the traffic rules and regulations!"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-	</LinearLayout>
+			<TextView android:paddingTop="20dip" android:textStyle="bold"
+				android:text="FAQ" android:layout_width="wrap_content"
+				android:layout_height="wrap_content"></TextView>
+			<TextView android:text="Do I really have to walk outside to play this game?: Yes!"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+			<TextView
+				android:text="How does my ufo shoot?: Your ufo shoots as soon as the targets are within your laser range but not if they are too near."
+				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+			<TextView
+				android:text="Why doesn't my ufo shoot?: The tanks and the ufo are only shoot if you move."
+				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+			<TextView
+				android:text="The game doesn't start!: Make sure you are outside and your internet connection works. You need a fast internet connection otherwise the game will stuck sometimes."
+				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+
+		</LinearLayout>
+
+	</ScrollView>
 
 </LinearLayout>
