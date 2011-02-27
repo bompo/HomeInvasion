@@ -107,7 +107,7 @@ public class SettingsActivity extends Activity {
 			GameLogic.getInstance().setTimeLimit(GameLogic.MEDIUM_LENGTH);
 			GameLogic.getInstance().setMaxTargets(GameLogic.MEDIUM_MODE);
 
-		} else if (choice.equals("25 Minutes")) {
+		} else if (choice.equals("30 Minutes")) {
 			GameLogic.getInstance().setTimeLimit(GameLogic.LONG_LENGTH);
 			GameLogic.getInstance().setMaxTargets(GameLogic.HARD_MODE);
 		}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="de.swagner.homeinvasion" android:versionCode="1" android:versionName="HomeInvasion 0.1" android:installLocation="auto">
+	package="de.swagner.homeinvasion" android:versionCode="6" android:versionName="HomeInvasion 0.15" android:installLocation="auto">
 	<application android:icon="@drawable/icon" android:label="@string/app_name" android:name="HomeInvasionApp">
 		<activity android:name=".MenuActivity" android:label="@string/app_name"
 			android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait">
@@ -38,8 +38,8 @@
 	</application>
 	<uses-sdk android:minSdkVersion="7" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 </manifest> 

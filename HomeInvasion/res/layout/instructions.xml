@@ -50,9 +50,18 @@
 			<TextView
 				android:text="The game doesn't start!: Make sure you are outside and your internet connection works. You need a fast internet connection otherwise the game will stuck sometimes."
 				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-
 		</LinearLayout>
 
 	</ScrollView>
+	
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:myapp="http://schemas.android.com/apk/res/de.swagner.homeinvasion"
+		android:orientation="vertical" android:layout_width="fill_parent"
+		android:layout_height="50dip" android:layout_weight="10">
+		<com.admob.android.ads.AdView android:id="@+id/ad"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			myapp:backgroundColor="#000000" myapp:primaryTextColor="#FFFFFF"
+			myapp:secondaryTextColor="#CCCCCC" />
+	</RelativeLayout>
 
 </LinearLayout>

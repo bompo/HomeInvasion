@@ -534,9 +534,9 @@ public class GameActivity extends MapActivity {
 		GeoPoint prevPos;
 		boolean nextRoute = false;
 		int cntRoute = 1;
-		int radius = 10;
+		int radius = 15;
 		while (GameLogic.getInstance().getItems().size() <= GameLogic.getInstance().getMaxTargets()) {
-			radius = radius+5; 
+			radius = radius+10; 
 			for (int y = -radius; y <= radius; y = y + radius) {
 				for (int x = -radius; x <= radius; x = x + radius) {
 					if(locationFix.isInterrupted()) return;
@@ -548,9 +548,8 @@ public class GameActivity extends MapActivity {
 						// cals route from player to grid position
 						routePos = new GeoPoint((int) (geoLat), (int) (geoLng));
 
-						String pairs[] = GameActivity.getDirectionData(routePos.getLatitudeE6() / 1E6 + "," + routePos.getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayer().getPosition()
-								.getLatitudeE6()
-								/ 1E6 + "," + GameLogic.getInstance().getPlayer().getPosition().getLongitudeE6() / 1E6);
+						String pairs[] = GameActivity.getDirectionData(routePos.getLatitudeE6() / 1E6 + "," + routePos.getLongitudeE6() / 1E6,GameLogic.getInstance().getPlayer().getPosition().getLatitudeE6() / 1E6 + ","
+								+ GameLogic.getInstance().getPlayer().getPosition().getLongitudeE6() / 1E6);
 						cntRoute = 1;
 						if(pairs.length<2) break;
 						String[] nextlngLat = pairs[cntRoute].split(",");
@@ -577,10 +576,10 @@ public class GameActivity extends MapActivity {
 							// -
 							// prevPos||
 							GeoPoint dotPos = nextPos;
-							int newLat = (int) (prevPos.getLatitudeE6() + (theGame.getItemDistance() * l
+							int newLat = (int) (prevPos.getLatitudeE6() + (theGame.getItemPlacementDistance() * l
 									* (1 / Math.sqrt(Math.pow(nextPos.getLatitudeE6() - prevPos.getLatitudeE6(), 2) + Math.pow(nextPos.getLongitudeE6() - prevPos.getLongitudeE6(), 2))) * (nextPos
 									.getLatitudeE6() - prevPos.getLatitudeE6())));
-							int newLog = (int) (prevPos.getLongitudeE6() + (theGame.getItemDistance() * l
+							int newLog = (int) (prevPos.getLongitudeE6() + (theGame.getItemPlacementDistance() * l
 									* (1 / Math.sqrt(Math.pow(nextPos.getLatitudeE6() - prevPos.getLatitudeE6(), 2) + Math.pow(nextPos.getLongitudeE6() - prevPos.getLongitudeE6(), 2))) * (nextPos
 									.getLongitudeE6() - prevPos.getLongitudeE6())));
 
@@ -589,11 +588,11 @@ public class GameActivity extends MapActivity {
 							// if( ||prevPos + 100 * counter * ||nextPos -
 							// prevPos|||| <||nextPos - prevPos|| )
 							if (Math.sqrt(Math.pow(
-									theGame.getItemDistance() * l
+									theGame.getItemRadius() * l
 											* (1 / Math.sqrt(Math.pow(nextPos.getLatitudeE6() - prevPos.getLatitudeE6(), 2) + Math.pow(nextPos.getLongitudeE6() - prevPos.getLongitudeE6(), 2)))
 											* (nextPos.getLatitudeE6() - prevPos.getLatitudeE6()), 2)
 									+ Math.pow(
-											theGame.getItemDistance()
+											theGame.getItemRadius()
 													* l
 													* (1 / Math.sqrt(Math.pow(nextPos.getLatitudeE6() - prevPos.getLatitudeE6(), 2) + Math.pow(nextPos.getLongitudeE6() - prevPos.getLongitudeE6(), 2)))
 													* (nextPos.getLongitudeE6() - prevPos.getLongitudeE6()), 2)) < Math.sqrt(Math.pow(prevPos.getLatitudeE6() - nextPos.getLatitudeE6(), 2)
@@ -608,7 +607,7 @@ public class GameActivity extends MapActivity {
 							if(!this.isFinishing()) {
 								if (GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), routePos) > GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), dotPos)) {
 									theGame.addItem(getApplicationContext(), locationManager, dotPos);
-								}
+								} 
 							}
 						}
 					} catch (Exception e) {
@@ -704,28 +703,28 @@ public class GameActivity extends MapActivity {
 			int leftRight = (int) Math.floor((Math.random() * 2) + 1);
 			if (leftRight == 1) {
 				// left
-				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((-6 * theGame.getItemDistance())));
+				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((-6 * theGame.getTankPlacementDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((rnd * theGame.getItemDistance())));
+				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((rnd * theGame.getTankPlacementDistance())));
 			} else {
 				// right
-				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((6 * theGame.getItemDistance())));
+				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((6 * theGame.getTankPlacementDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((rnd * theGame.getItemDistance())));
+				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((rnd * theGame.getTankPlacementDistance())));
 			}
 		} else {
 			// top or down
 			int topDown = (int) Math.floor((Math.random() * 2) + 1);
 			if (topDown == 1) {
 				// top
-				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((6 * theGame.getItemDistance())));
+				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((6 * theGame.getTankPlacementDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((rnd * theGame.getItemDistance())));
+				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((rnd * theGame.getTankPlacementDistance())));
 			} else {
 				// down
-				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((-6 * theGame.getItemDistance())));
+				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((-6 * theGame.getTankPlacementDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((rnd * theGame.getItemDistance())));
+				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((rnd * theGame.getTankPlacementDistance())));
 			}
 		}
 

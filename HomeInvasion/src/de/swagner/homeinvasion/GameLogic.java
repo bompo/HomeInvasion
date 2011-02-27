@@ -23,7 +23,7 @@ public final class GameLogic {
 	
 	final static int SHORT_LENGTH = 900;
 	final static int MEDIUM_LENGTH = 1200;
-	final static int LONG_LENGTH = 1500;
+	final static int LONG_LENGTH = 1800;
 	
 	final static String prefs = "Settings";
 
@@ -40,6 +40,8 @@ public final class GameLogic {
 	private int itemRadius;
 	private int tankRadius;
 	private int itemPlacementDistance;
+
+	private int tankPlacementDistance;
 	private int maxTargets;
 
 	private boolean gameOver;
@@ -65,8 +67,9 @@ public final class GameLogic {
 		timeLeft = timeLimit;
 		gameRadius = 100;
 		itemRadius = 55;
+		itemPlacementDistance = 30;
 		tankRadius = 65;
-		itemPlacementDistance = 400;
+		tankPlacementDistance = 500;
 		tankSpeed = 15;
 		victory = false;
 		gameOver = false;
@@ -121,7 +124,7 @@ public final class GameLogic {
 			return false;
 		
 		for(GeoPoint dotGeoPoint:getItemGeoPoints()) {
-			if(CalculationByDistance(geoPoint, dotGeoPoint)<itemRadius) return false;
+			if(CalculationByDistance(geoPoint, dotGeoPoint)<itemPlacementDistance) return false;
 		}
 
 		Item newItem = new Item(context, locationManager, geoPoint);
@@ -188,7 +191,11 @@ public final class GameLogic {
 		tankSpeed = speed;
 	}
 
-	public int getItemDistance() {
+	public int getTankPlacementDistance() {
+		return tankPlacementDistance;
+	}
+	
+	public int getItemPlacementDistance() {
 		return itemPlacementDistance;
 	}
 

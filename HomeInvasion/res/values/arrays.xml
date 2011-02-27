@@ -10,7 +10,7 @@
     <string-array name="timelimit">
         <item>15 Minutes</item>
         <item>20 Minutes</item>
-        <item>25 Minutes</item>
+        <item>30 Minutes</item>
     </string-array>
     
 

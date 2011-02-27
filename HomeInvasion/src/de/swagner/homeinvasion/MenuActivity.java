@@ -2,10 +2,13 @@ package de.swagner.homeinvasion;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.admob.android.ads.AdManager;
 
 public class MenuActivity extends Activity {
 	
@@ -95,7 +98,7 @@ public class MenuActivity extends Activity {
 			GameLogic.getInstance().setTimeLimit(GameLogic.MEDIUM_LENGTH);
 			GameLogic.getInstance().setMaxTargets(GameLogic.MEDIUM_MODE);
 
-		} else if (choice.equals("25 Minutes")) {
+		} else if (choice.equals("30 Minutes")) {
 			GameLogic.getInstance().setTimeLimit(GameLogic.LONG_LENGTH);
 			GameLogic.getInstance().setMaxTargets(GameLogic.HARD_MODE);
 		}
