@@ -548,8 +548,8 @@ public class GameActivity extends MapActivity {
 						// cals route from player to grid position
 						routePos = new GeoPoint((int) (geoLat), (int) (geoLng));
 
-						String pairs[] = GameActivity.getDirectionData(routePos.getLatitudeE6() / 1E6 + "," + routePos.getLongitudeE6() / 1E6,GameLogic.getInstance().getPlayer().getPosition().getLatitudeE6() / 1E6 + ","
-								+ GameLogic.getInstance().getPlayer().getPosition().getLongitudeE6() / 1E6);
+						String pairs[] = GameActivity.getDirectionData(GameLogic.getInstance().getPlayer().getPosition().getLatitudeE6() / 1E6 + ","
+								+ GameLogic.getInstance().getPlayer().getPosition().getLongitudeE6() / 1E6,routePos.getLatitudeE6() / 1E6 + "," + routePos.getLongitudeE6() / 1E6);
 						cntRoute = 1;
 						if(pairs.length<2) break;
 						String[] nextlngLat = pairs[cntRoute].split(",");
@@ -605,7 +605,7 @@ public class GameActivity extends MapActivity {
 							//Log.v("placeDot", dotPos.toString());
 
 							if(!this.isFinishing()) {
-								if (GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), routePos) > GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), dotPos)) {
+								if (GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), routePos) > GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), dotPos) && GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), dotPos) > theGame.getItemRadius()+10) {
 									theGame.addItem(getApplicationContext(), locationManager, dotPos);
 								} 
 							}
