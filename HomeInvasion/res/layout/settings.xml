@@ -10,7 +10,7 @@
 		<View style="@style/TitleBarSpring" />
 	</LinearLayout>
 	<ScrollView android:id="@+id/ScrollView01"
-		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		android:layout_width="wrap_content" android:layout_height="wrap_content" android:fillViewport="true" android:layout_weight="10">
 		<LinearLayout android:orientation="vertical"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_weight="1" android:background="@color/background2"
@@ -124,5 +124,15 @@
 
 		</LinearLayout>
 	</ScrollView>
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:myapp="http://schemas.android.com/apk/res/de.swagner.homeinvasion"
+		android:orientation="vertical" android:layout_width="fill_parent"
+		android:layout_height="50dip" android:layout_weight="1">
+		<com.admob.android.ads.AdView android:id="@+id/ad"
+			android:layout_width="fill_parent" android:layout_height="50dip"
+			myapp:backgroundColor="#000000" myapp:primaryTextColor="#FFFFFF"
+			myapp:secondaryTextColor="#CCCCCC" />
+	</LinearLayout>
 
 </LinearLayout>
