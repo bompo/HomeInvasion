@@ -10,10 +10,10 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".GameActivity" android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait" android:launchMode="singleTask"></activity>
-		<activity android:name=".InstructionsActivity" android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait" android:launchMode="singleTask"></activity>
-		<activity android:name=".ScoreActivity" android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait" android:launchMode="singleTask"></activity>
-		<activity android:name=".SettingsActivity" android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait"  android:launchMode="singleTask"></activity>
+		<activity android:name=".GameActivity" android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait" android:launchMode="singleTask" android:noHistory="true"></activity>
+		<activity android:name=".InstructionsActivity" android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait" android:launchMode="singleTask" android:noHistory="true"></activity>
+		<activity android:name=".ScoreActivity" android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait" android:launchMode="singleTask" android:noHistory="true"></activity>
+		<activity android:name=".SettingsActivity" android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait"  android:launchMode="singleTask" android:noHistory="true"></activity>
 
 		<service android:name=".GameService"></service>
 
@@ -33,7 +33,6 @@
 		   <action android:name="com.android.vending.INSTALL_REFERRER" />
 		</intent-filter>
 		</receiver>
-		<meta-data android:value="true" android:name="ADMOB_ALLOW_LOCATION_FOR_ADS"/>
 
 	</application>
 	<uses-sdk android:minSdkVersion="7" />

@@ -107,9 +107,9 @@
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		xmlns:myapp="http://schemas.android.com/apk/res/de.swagner.homeinvasion"
 		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="50dip" android:layout_weight="1">
+		android:layout_height="52dip" android:layout_weight="1">
 		<com.admob.android.ads.AdView android:id="@+id/ad"
-			android:layout_width="fill_parent" android:layout_height="50dip"
+			android:layout_width="fill_parent" android:layout_height="52dip"
 			myapp:backgroundColor="#000000" myapp:primaryTextColor="#FFFFFF"
 			myapp:secondaryTextColor="#CCCCCC" />
 	</LinearLayout>
