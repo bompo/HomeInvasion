@@ -22,7 +22,7 @@
 		<com.google.android.maps.MapView
 			android:id="@+id/map_view" android:layout_width="fill_parent"
 			android:layout_height="fill_parent" android:enabled="true"
-			android:clickable="true" android:apiKey="09_hOWEsl2Foba5vONQqGbuBgkKBBfXcTiNfnrQ" />
+			android:clickable="true" android:apiKey="09_hOWEsl2Frm_MBxnJtIzHbSWT73eJ3S4YbUbA" />
 		<!-- Stefans Release 09_hOWEsl2Frm_MBxnJtIzHbSWT73eJ3S4YbUbA -->
 		<!-- Stefans Dev home 09_hOWEsl2Foba5vONQqGbuBgkKBBfXcTiNfnrQ -->
 		<!-- Stefans Dev Fak Rechner 09_hOWEsl2FrxQdElx_0Jw4ZlO4GTeH1vi357Kw -->

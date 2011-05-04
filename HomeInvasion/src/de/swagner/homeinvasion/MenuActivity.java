@@ -2,13 +2,13 @@ package de.swagner.homeinvasion;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.admob.android.ads.AdManager;
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
 
 public class MenuActivity extends Activity {
 	
@@ -24,6 +24,10 @@ public class MenuActivity extends Activity {
 		setGameLength(getSharedPreferences(GameLogic.prefs,MODE_PRIVATE).getString("GameTime", "20 Minutes"));
 		GameLogic.getInstance().setAnimation(getSharedPreferences(GameLogic.prefs,MODE_PRIVATE).getBoolean("Animation", true));
 		GameLogic.getInstance().setSatellite(getSharedPreferences(GameLogic.prefs,MODE_PRIVATE).getBoolean("Satellite", true));
+		
+	    // Look up the AdView as a resource and load a request.
+	    AdView adView = (AdView)this.findViewById(R.id.ad);
+	    adView.loadAd(new AdRequest());
 	}
 	
 	@Override
@@ -36,8 +40,8 @@ public class MenuActivity extends Activity {
 	/** Handle "gameStart" action. */
 	public void onGameStartClick(View v) {
 		GameLogic.getInstance().restartGame();
-		Intent PacMapIntent = new Intent(getBaseContext(), de.swagner.homeinvasion.GameActivity.class);
-		startActivity(PacMapIntent);
+		Intent GameIntent = new Intent(getBaseContext(), de.swagner.homeinvasion.GameActivity.class);
+		startActivity(GameIntent);
 	}
 
 	/** Handle "instructions" action. */

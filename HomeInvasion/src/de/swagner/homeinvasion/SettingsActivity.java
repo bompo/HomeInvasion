@@ -1,5 +1,8 @@
 package de.swagner.homeinvasion;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
+
 import android.app.Activity;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -70,6 +73,10 @@ public class SettingsActivity extends Activity {
 				// TODO Auto-generated method stub
 			}
 		});
+		
+	    // Look up the AdView as a resource and load a request.
+	    AdView adView = (AdView)this.findViewById(R.id.ad);
+	    adView.loadAd(new AdRequest());
 	}
 
 	public void onDebugClick(View v) {

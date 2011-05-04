@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="de.swagner.homeinvasion" android:versionCode="6" android:versionName="HomeInvasion 0.15" android:installLocation="auto">
-	<application android:icon="@drawable/icon" android:label="@string/app_name" android:name="HomeInvasionApp">
+	package="de.swagner.homeinvasion" android:versionCode="10"
+	android:versionName="HomeInvasion 0.19" android:installLocation="auto">
+	<application android:icon="@drawable/icon" android:label="@string/app_name"
+		android:name="HomeInvasionApp">
 		<activity android:name=".MenuActivity" android:label="@string/app_name"
 			android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait">
 			<intent-filter>
@@ -10,35 +12,30 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".GameActivity" android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait" android:launchMode="singleTask" android:noHistory="true"></activity>
-		<activity android:name=".InstructionsActivity" android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait" android:launchMode="singleTask" android:noHistory="true"></activity>
-		<activity android:name=".ScoreActivity" android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait" android:launchMode="singleTask" android:noHistory="true"></activity>
-		<activity android:name=".SettingsActivity" android:theme="@style/Theme.HomeInvasion" android:screenOrientation="portrait"  android:launchMode="singleTask" android:noHistory="true"></activity>
+		<activity android:name=".GameActivity" android:theme="@style/Theme.HomeInvasion"
+			android:screenOrientation="portrait" android:launchMode="singleTask"
+			android:noHistory="true"></activity>
+		<activity android:name=".InstructionsActivity" android:theme="@style/Theme.HomeInvasion"
+			android:screenOrientation="portrait" android:launchMode="singleTask"
+			android:noHistory="true"></activity>
+		<activity android:name=".ScoreActivity" android:theme="@style/Theme.HomeInvasion"
+			android:screenOrientation="portrait" android:launchMode="singleTask"
+			android:noHistory="true"></activity>
+		<activity android:name=".SettingsActivity" android:theme="@style/Theme.HomeInvasion"
+			android:screenOrientation="portrait" android:launchMode="singleTask"
+			android:noHistory="true"></activity>
 
 		<service android:name=".GameService"></service>
 
 		<uses-library android:name="com.google.android.maps" />
 
-		<!-- The application's publisher ID assigned by AdMob -->
-		<meta-data android:value="a14d5ba7c3167bc" android:name="ADMOB_PUBLISHER_ID" />
-		        
-		<!-- AdMobActivity definition -->
-		<activity android:name="com.admob.android.ads.AdMobActivity"
-		android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-		android:configChanges="orientation|keyboard|keyboardHidden" />
-		<!-- Track Market installs -->          
-		<receiver android:name="com.admob.android.ads.analytics.InstallReceiver"
-		android:exported="true">
-		<intent-filter>
-		   <action android:name="com.android.vending.INSTALL_REFERRER" />
-		</intent-filter>
-		</receiver>
+		<activity android:name="com.google.ads.AdActivity"
+			android:configChanges="keyboard|keyboardHidden|orientation" />
 
 	</application>
-	<uses-sdk android:minSdkVersion="7" />
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="8" />
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 </manifest> 

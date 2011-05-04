@@ -16,42 +16,6 @@
 			android:layout_weight="1" android:background="@color/background2"
 			android:padding="6dip">
 
-
-			<RelativeLayout android:gravity="center_vertical"
-				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:onClick="onDebugClick">
-				<LinearLayout android:orientation="vertical"
-					android:layout_width="fill_parent" android:layout_height="wrap_content">
-					<TextView android:textSize="15sp" android:textColor="@color/title_text"
-						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:text="Record" android:id="@+id/settingsDebugLabel"
-						android:textStyle="bold" />
-					<TextView android:layout_width="wrap_content"
-						android:layout_height="wrap_content" android:textColor="@color/title_text"
-						android:text="Record Session. Used for Debugging" />
-				</LinearLayout>
-			</RelativeLayout>
-
-			<ImageView style="@style/SettingsSeparator" />
-
-
-			<RelativeLayout android:gravity="center_vertical"
-				android:id="@+id/RelativeLayout01" android:layout_height="wrap_content"
-				android:layout_width="fill_parent" android:onClick="onParseClick">
-				<LinearLayout android:orientation="vertical"
-					android:layout_width="fill_parent" android:layout_height="wrap_content">
-					<TextView android:text="Parse List" android:textSize="15sp"
-						android:layout_width="wrap_content" android:textColor="@color/title_text"
-						android:layout_height="wrap_content" android:id="@+id/settingsParseLabel"
-						android:textStyle="bold"></TextView>
-					<TextView android:layout_height="wrap_content"
-						android:text="Parse List of recorded Locations. Used for Debugging."
-						android:textColor="@color/title_text" android:layout_width="wrap_content"></TextView>
-				</LinearLayout>
-			</RelativeLayout>
-
-			<ImageView style="@style/SettingsSeparator" />
-
 			<RelativeLayout android:gravity="center_vertical"
 				android:layout_width="fill_parent" android:layout_height="wrap_content">
 				<LinearLayout android:orientation="vertical"
@@ -126,13 +90,12 @@
 	</ScrollView>
 	
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:myapp="http://schemas.android.com/apk/res/de.swagner.homeinvasion"
-		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="52dip" android:layout_weight="1">
-		<com.admob.android.ads.AdView android:id="@+id/ad"
-			android:layout_width="fill_parent" android:layout_height="52dip"
-			myapp:backgroundColor="#000000" myapp:primaryTextColor="#FFFFFF"
-			myapp:secondaryTextColor="#CCCCCC" />
+		xmlns:ads="http://schemas.android.com/apk/res/de.swagner.homeinvasion"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:gravity="bottom">
+		<com.google.ads.AdView android:id="@+id/ad"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			ads:adUnitId="a14d5ba7c3167bc" ads:adSize="BANNER"/>/>
 	</LinearLayout>
 
 </LinearLayout>
