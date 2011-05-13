@@ -96,6 +96,7 @@ public class GameActivity extends MapActivity {
 
 	private String provider;
 	private String coarseProvider;
+	private String passiveProvider;
 
 	private Timer animTimer = new Timer();
 	Thread locationFix;	
@@ -140,6 +141,16 @@ public class GameActivity extends MapActivity {
 			mapController = mapView.getController();
 		
 			
+			//get fast fix with best last known location
+			List<String> providers = locationManager.getProviders(new Criteria(), false);
+			for(String provider:providers) {
+				updateWithNewLocation(locationManager.getLastKnownLocation(provider));
+			}
+			
+			//passiveProvider
+			passiveProvider = LocationManager.PASSIVE_PROVIDER;
+			locationManager.requestLocationUpdates(passiveProvider, 1000, 1f, locationPassiveListener);
+			
 			// find quick location provider
 			Criteria criteria = new Criteria();
 			criteria.setAccuracy(Criteria.ACCURACY_COARSE);
@@ -155,11 +166,12 @@ public class GameActivity extends MapActivity {
 						
 			provider = LocationManager.GPS_PROVIDER;
 
-			//DEBUG (remove for release)
-			try {
-				locationManager.removeTestProvider(provider);
-			} catch (Exception e) {
-				
+			if (Constants.debugMode) {
+				try {
+					locationManager.removeTestProvider(provider);
+				} catch (Exception e) {
+
+				}
 			}
 
 			if (provider==null || !locationManager.isProviderEnabled(provider)) {
@@ -378,6 +390,32 @@ public class GameActivity extends MapActivity {
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 		}
 	};
+	
+	/**
+	 * listener for location changes
+	 */
+	private final LocationListener locationPassiveListener = new LocationListener() {
+		@Override
+		public void onLocationChanged(Location location) {
+			updateWithNewLocation(location);
+		}
+
+		@Override
+		public void onProviderDisabled(String provider) {
+			try {
+				locationManager.removeUpdates(locationPassiveListener);
+			} catch (Exception e) {
+			}
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
+	};
 
 	/**
 	 * sensor listener
@@ -421,6 +459,7 @@ public class GameActivity extends MapActivity {
 		}
 
 		try {
+			locationManager.removeUpdates(locationPassiveListener);
 			locationManager.removeUpdates(locationListener);
 			locationManager.removeUpdates(locationCoarseListener);
 		} catch (Exception e) {
@@ -472,10 +511,14 @@ public class GameActivity extends MapActivity {
 		}
 		
 		try {
+			locationManager.removeUpdates(locationPassiveListener);
 			locationManager.removeUpdates(locationListener);
 			locationManager.removeUpdates(locationCoarseListener);
 		} catch (Exception e) {
 		}
+		
+		passiveProvider = LocationManager.PASSIVE_PROVIDER;
+		locationManager.requestLocationUpdates(passiveProvider, 1000, 1f, locationPassiveListener);
 		
 		if (coarseProvider!=null && locationManager.isProviderEnabled(coarseProvider)) {
 			locationManager.requestLocationUpdates(coarseProvider, 1000, 1f, locationCoarseListener);
@@ -787,12 +830,14 @@ public class GameActivity extends MapActivity {
 	 * @param longitude
 	 */
 	public void setLocation(double latitude, double longitude) {
+		if (Constants.debugMode) {
 		debugLocation = new Location(provider);
 		debugLocation.setTime(System.currentTimeMillis());
 		debugLocation.setLatitude(latitude);
 		debugLocation.setLongitude(longitude);
 		debugLocation.setAccuracy(1.0f);
 		locationManager.setTestProviderLocation(provider, debugLocation);
+		}
 	}
 
 	/**

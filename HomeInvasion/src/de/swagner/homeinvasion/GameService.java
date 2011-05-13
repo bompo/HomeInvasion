@@ -74,6 +74,7 @@ public class GameService extends Service {
 				
 				tankAI();
 				
+				if (Constants.debugMode) {
 				//DEBUG STUFF
 				try {
 					if (Debug.getInstance().getDebugMode())
@@ -84,6 +85,7 @@ public class GameService extends Service {
 				}
 				if (Debug.getInstance().getParsedMode() && GameLogic.getInstance().isGameReady()) {
 					GameLogic.getInstance().getPlayer().setDirection(Debug.getInstance().getCurrentRecordedDirection());
+				}
 				}
 				
 			}
