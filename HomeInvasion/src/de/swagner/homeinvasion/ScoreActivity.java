@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
@@ -31,9 +28,9 @@ public class ScoreActivity extends Activity {
 		
 		recalcHighscore(GameLogic.getInstance().getPoints(), GameLogic.getInstance().getTimeLeft());
 		
-	    // Look up the AdView as a resource and load a request.
-	    AdView adView = (AdView)this.findViewById(R.id.ad);
-	    adView.loadAd(new AdRequest());
+//	    // Look up the AdView as a resource and load a request.
+//	    AdView adView = (AdView)this.findViewById(R.id.ad);
+//	    adView.loadAd(new AdRequest());
 	}
 
 	/** Handle "newGame" action. */

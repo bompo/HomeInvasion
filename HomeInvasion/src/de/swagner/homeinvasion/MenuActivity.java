@@ -7,9 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
-
 public class MenuActivity extends Activity {
 	
 	/** Called when the activity is first created. */
@@ -25,9 +22,9 @@ public class MenuActivity extends Activity {
 		GameLogic.getInstance().setAnimation(getSharedPreferences(GameLogic.prefs,MODE_PRIVATE).getBoolean("Animation", true));
 		GameLogic.getInstance().setSatellite(getSharedPreferences(GameLogic.prefs,MODE_PRIVATE).getBoolean("Satellite", true));
 		
-	    // Look up the AdView as a resource and load a request.
-	    AdView adView = (AdView)this.findViewById(R.id.ad);
-	    adView.loadAd(new AdRequest());
+//	    // Look up the AdView as a resource and load a request.
+//	    AdView adView = (AdView)this.findViewById(R.id.ad);
+//	    adView.loadAd(new AdRequest());
 	}
 	
 	@Override

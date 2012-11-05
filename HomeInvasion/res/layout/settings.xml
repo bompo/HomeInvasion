@@ -89,6 +89,7 @@
 		</LinearLayout>
 	</ScrollView>
 	
+	<!-- 
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		xmlns:ads="http://schemas.android.com/apk/res/de.swagner.homeinvasion"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -97,5 +98,6 @@
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			ads:adUnitId="a14d5ba7c3167bc" ads:adSize="BANNER"/>/>
 	</LinearLayout>
+	-->
 
 </LinearLayout>
