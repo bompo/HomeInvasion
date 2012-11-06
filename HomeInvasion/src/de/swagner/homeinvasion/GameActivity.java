@@ -3,6 +3,7 @@ package de.swagner.homeinvasion;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -15,6 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -47,6 +49,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -55,16 +58,15 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
 /**
- * Gameplay Activity
- * LocationListener, Overlays,   
+ * Gameplay Activity LocationListener, Overlays,
  * 
  * @author bompo
- *
+ * 
  */
 public class GameActivity extends MapActivity {
 	private static final int TWO_MINUTES = 1000 * 60 * 2;
 	private static SensorManager sensorManager;
-	
+
 	private List<Sensor> sensors;
 	private boolean sersorrunning = false;
 	private MapView mapView;
@@ -73,7 +75,7 @@ public class GameActivity extends MapActivity {
 	private UfoOverlay ufoOverlay;
 	private ItemOverlay itemOverlay;
 	private TankOverlay tankOverlay;
-	
+
 	private TextView tv_points;
 	private TextView tv_time;
 	private TextView tv_wave;
@@ -81,11 +83,13 @@ public class GameActivity extends MapActivity {
 	private GameLogic theGame;
 	private GameService gameService;
 	private Intent gameServiceIntent;
-	
+
 	private boolean inDialog = false;
 
-	public static String itemsProximityIntentAction = new String("de.swagner.homeinvasion.item.PROXIMITY_ALERT");
-	public static String tankProximityIntentAction = new String("de.swagner.homeinvasion.tank.PROXIMITY_ALERT");
+	public static String itemsProximityIntentAction = new String(
+			"de.swagner.homeinvasion.item.PROXIMITY_ALERT");
+	public static String tankProximityIntentAction = new String(
+			"de.swagner.homeinvasion.tank.PROXIMITY_ALERT");
 
 	private ProgressBar mProgress;
 	private Handler mHandler = new Handler();
@@ -99,19 +103,20 @@ public class GameActivity extends MapActivity {
 	private String passiveProvider;
 
 	private Timer animTimer = new Timer();
-	Thread locationFix;	
+	Thread locationFix;
 	
+
 	private ItemProximityIntentReceiver itemProximityIntentReceiver;
 	private TankProximityIntentReceiver tankProximityIntentReceiver;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState); 
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map_layout);
-		
+
 		Window window = getWindow();
 		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		
+
 		if (!GameLogic.getInstance().isGameReady()) {
 
 			tv_points = (TextView) findViewById(R.id.tv_points);
@@ -124,33 +129,37 @@ public class GameActivity extends MapActivity {
 
 			// intent for proximity items stuff
 			itemProximityIntentReceiver = new ItemProximityIntentReceiver();
-			IntentFilter itemIntentFilter = new IntentFilter(itemsProximityIntentAction);
+			IntentFilter itemIntentFilter = new IntentFilter(
+					itemsProximityIntentAction);
 			registerReceiver(itemProximityIntentReceiver, itemIntentFilter);
 
 			// intent for proximity tanks stuff
 			tankProximityIntentReceiver = new TankProximityIntentReceiver();
-			IntentFilter tankIntentFilter = new IntentFilter(tankProximityIntentAction);
+			IntentFilter tankIntentFilter = new IntentFilter(
+					tankProximityIntentAction);
 			registerReceiver(tankProximityIntentReceiver, tankIntentFilter);
 
 			mapView = (MapView) findViewById(R.id.map_view);
-			if(GameLogic.getInstance().isSatellite()) {
+			if (GameLogic.getInstance().isSatellite()) {
 				mapView.setSatellite(true);
 			} else {
 				mapView.setSatellite(false);
 			}
 			mapController = mapView.getController();
-		
-			
-			//get fast fix with best last known location
-			List<String> providers = locationManager.getProviders(new Criteria(), false);
-			for(String provider:providers) {
-				updateWithNewLocation(locationManager.getLastKnownLocation(provider));
+
+			// get fast fix with best last known location
+			List<String> providers = locationManager.getProviders(
+					new Criteria(), false);
+			for (String provider : providers) {
+				updateWithNewLocation(locationManager
+						.getLastKnownLocation(provider));
 			}
-			
-			//passiveProvider
+
+			// passiveProvider
 			passiveProvider = LocationManager.PASSIVE_PROVIDER;
-			locationManager.requestLocationUpdates(passiveProvider, 1000, 1f, locationPassiveListener);
-			
+			locationManager.requestLocationUpdates(passiveProvider, 1000, 1f,
+					locationPassiveListener);
+
 			// find quick location provider
 			Criteria criteria = new Criteria();
 			criteria.setAccuracy(Criteria.ACCURACY_COARSE);
@@ -159,11 +168,13 @@ public class GameActivity extends MapActivity {
 			criteria.setCostAllowed(true);
 			criteria.setPowerRequirement(Criteria.POWER_LOW);
 			coarseProvider = locationManager.getBestProvider(criteria, true);
-								
-			if (coarseProvider!=null && locationManager.isProviderEnabled(coarseProvider)) {
-				locationManager.requestLocationUpdates(coarseProvider, 1000, 1f, locationCoarseListener);
+
+			if (coarseProvider != null
+					&& locationManager.isProviderEnabled(coarseProvider)) {
+				locationManager.requestLocationUpdates(coarseProvider, 1000,
+						1f, locationCoarseListener);
 			}
-						
+
 			provider = LocationManager.GPS_PROVIDER;
 
 			if (Constants.debugMode) {
@@ -174,27 +185,31 @@ public class GameActivity extends MapActivity {
 				}
 			}
 
-			if (provider==null || !locationManager.isProviderEnabled(provider)) {
+			if (provider == null
+					|| !locationManager.isProviderEnabled(provider)) {
 				createGpsDisabledAlert();
 				return;
 			} else {
-				currentLocation = locationManager.getLastKnownLocation(provider);
+				currentLocation = locationManager
+						.getLastKnownLocation(provider);
 				updateWithNewLocation(currentLocation);
-				locationManager.requestLocationUpdates(provider, 1000, 1f, locationListener);
-			}	
-			
-			if(!isOnline()) {
+				locationManager.requestLocationUpdates(provider, 1000, 1f,
+						locationListener);
+			}
+
+			if (!isOnline()) {
 				createInternetAlert();
 				return;
-			}			
-						
+			}
+
 			if (!Debug.getInstance().getParsedMode()) {
 				// sensor setup
 				sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 				sensors = sensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
 
 				if (sensors.size() > 0) {
-					sensorManager.registerListener(mySensorEventListener, sensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
+					sensorManager.registerListener(mySensorEventListener,
+							sensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
 					sersorrunning = true;
 				} else {
 					sersorrunning = false;
@@ -203,15 +218,22 @@ public class GameActivity extends MapActivity {
 			} else {
 				// test that mock locations are allowed so a more descriptive
 				// error message can be logged
-				if (Settings.Secure.getInt(getBaseContext().getContentResolver(), Settings.Secure.ALLOW_MOCK_LOCATION, 0) == 0) {
-					Log.e("debug", "Mock locations are currently disabled in Settings - this test requires mock locations");
+				if (Settings.Secure.getInt(getBaseContext()
+						.getContentResolver(),
+						Settings.Secure.ALLOW_MOCK_LOCATION, 0) == 0) {
+					Log.e("debug",
+							"Mock locations are currently disabled in Settings - this test requires mock locations");
 				}
 
-				locationManager.addTestProvider(provider, false, false, false, false, false, false, false, Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
+				locationManager.addTestProvider(provider, false, false, false,
+						false, false, false, false, Criteria.POWER_LOW,
+						Criteria.ACCURACY_FINE);
 				locationManager.setTestProviderEnabled(provider, true);
 
 				// in debug mode set recorded positions
-				setLocation(Debug.getInstance().getCurrentRecordedPosition().getLatitudeE6() / 1E6, Debug.getInstance().getCurrentRecordedPosition().getLongitudeE6() / 1E6);
+				setLocation(Debug.getInstance().getCurrentRecordedPosition()
+						.getLatitudeE6() / 1E6, Debug.getInstance()
+						.getCurrentRecordedPosition().getLongitudeE6() / 1E6);
 			}
 
 			mapView.setBuiltInZoomControls(true);
@@ -225,7 +247,11 @@ public class GameActivity extends MapActivity {
 
 			// Create a Dialog to let the User know
 			// that we're waiting for a GPS Fix
-			dialog = ProgressDialog.show(GameActivity.this, "Preparing Invasion...", "Retrieving current Position... Please make sure that GPS is enabled and your internet connection is working. This game can only be played outside.", true);
+			dialog = ProgressDialog
+					.show(GameActivity.this,
+							"Preparing Invasion...",
+							"Retrieving current Position... Please make sure that GPS is enabled and your internet connection is working. This game can only be played outside.",
+							true);
 			dialog.setCancelable(true);
 			dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
 				@Override
@@ -234,6 +260,12 @@ public class GameActivity extends MapActivity {
 				}
 			});
 			
+
+			// these are members in the Activity class
+			final Handler toastHandler = new Handler();
+			final Runnable toastRunnable = new Runnable() {public void run() {Toast.makeText(getApplicationContext(),"Google Maps API is over Quota. :( This app is free, sorry but I can't pay more quota", Toast.LENGTH_LONG).show();}};
+			
+
 			if (!theGame.isGameReady()) {
 				// takes long so we add a progress bar
 				mProgress = (ProgressBar) findViewById(R.id.progressbar);
@@ -241,6 +273,7 @@ public class GameActivity extends MapActivity {
 				mProgress.setIndeterminate(true);
 
 				// Start lengthy operation in a background thread
+				final Handler mHandler = new Handler();
 				locationFix = new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -255,10 +288,14 @@ public class GameActivity extends MapActivity {
 						}
 
 						updateWithNewLocation(currentLocation);
-						
-						createDots();
-						if(locationFix.isInterrupted()) return;
-						
+
+						if (!createDots()) {
+							
+							toastHandler.post(toastRunnable);
+							finish();
+						}
+						if (locationFix.isInterrupted()) return;
+
 						// Update the progress bar
 						mHandler.post(new Runnable() {
 							@Override
@@ -270,7 +307,9 @@ public class GameActivity extends MapActivity {
 								mProgress.setVisibility(View.GONE);
 								mapView.invalidate();
 								if (GameLogic.getInstance().isSound()) {
-									MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.intro);
+									MediaPlayer mp = MediaPlayer.create(
+											getApplicationContext(),
+											R.raw.intro);
 									try {
 										mp.prepare();
 									} catch (IllegalStateException e) {
@@ -281,14 +320,14 @@ public class GameActivity extends MapActivity {
 										e.printStackTrace();
 									}
 									mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-										
+
 										@Override
 										public void onPrepared(MediaPlayer mp) {
 											mp.start();
 										}
 									});
 									mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-										
+
 										@Override
 										public void onCompletion(MediaPlayer mp) {
 											mp.stop();
@@ -308,7 +347,7 @@ public class GameActivity extends MapActivity {
 			// add tank overlay
 			tankOverlay = new TankOverlay();
 			overlays.add(tankOverlay);
-			
+
 			// add ufo overlay
 			ufoOverlay = new UfoOverlay();
 			overlays.add(ufoOverlay);
@@ -322,17 +361,19 @@ public class GameActivity extends MapActivity {
 
 		}
 
-
 	}
 
 	private void updateWithNewLocation(Location location) {
-		if (isBetterLocation(location, currentLocation) && GameLogic.getInstance().getPlayer().isAlive()) {
+		if (isBetterLocation(location, currentLocation)
+				&& GameLogic.getInstance().getPlayer().isAlive()) {
 			currentLocation = location;
-		
+
 			GameLogic.getInstance().setCurrentLocation(currentLocation);
-			
+
 			// Update the map location.
-			GeoPoint point = new GeoPoint((int) (currentLocation.getLatitude() * 1E6), (int) (currentLocation.getLongitude() * 1E6));
+			GeoPoint point = new GeoPoint(
+					(int) (currentLocation.getLatitude() * 1E6),
+					(int) (currentLocation.getLongitude() * 1E6));
 
 			mapController.animateTo(point);
 			theGame.getPlayer().setPosition(point);
@@ -364,7 +405,7 @@ public class GameActivity extends MapActivity {
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 		}
 	};
-	
+
 	/**
 	 * listener for location changes
 	 */
@@ -390,7 +431,7 @@ public class GameActivity extends MapActivity {
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 		}
 	};
-	
+
 	/**
 	 * listener for location changes
 	 */
@@ -436,17 +477,17 @@ public class GameActivity extends MapActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 
-		if(locationFix!=null && locationFix.isAlive()) {
+		if (locationFix != null && locationFix.isAlive()) {
 			locationFix.interrupt();
 		}
-		
+
 		theGame.shutdownGame();
-		
+
 		unregisterReceiver(addTankReceiver);
 		unregisterReceiver(updateUIReceiver);
 		unregisterReceiver(tankProximityIntentReceiver);
 		unregisterReceiver(itemProximityIntentReceiver);
-		
+
 		if (GameLogic.getInstance().isAnimation()) {
 			try {
 				animTimer.cancel();
@@ -476,88 +517,96 @@ public class GameActivity extends MapActivity {
 	public void onStart() {
 		super.onStart();
 
-		registerReceiver(addTankReceiver, new IntentFilter(GameService.ADD_TANK_ACTION));
-		registerReceiver(updateUIReceiver, new IntentFilter(GameService.UPDATE_UI_ACTION));
+		registerReceiver(addTankReceiver, new IntentFilter(
+				GameService.ADD_TANK_ACTION));
+		registerReceiver(updateUIReceiver, new IntentFilter(
+				GameService.UPDATE_UI_ACTION));
 	}
-	
+
 	@Override
 	public void onStop() {
 		super.onStart();
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
-		if(inDialog) return;
-		
+		if (inDialog)
+			return;
+
 		if (sersorrunning) {
-			sensorManager.registerListener(mySensorEventListener, sensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
+			sensorManager.registerListener(mySensorEventListener,
+					sensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
 		}
 
 		// animate with ca30fps
 		if (GameLogic.getInstance().isAnimation()) {
 			animTimer = new Timer();
-			try{
-			animTimer.scheduleAtFixedRate(new TimerTask() {
-				@Override
-				public void run() {
-					ufoOverlay.update();
-					tankOverlay.update();
-					itemOverlay.update();
-					mapView.postInvalidate();
-				}
-			}, 0, 33);
-			} catch (Exception e) {}
+			try {
+				animTimer.scheduleAtFixedRate(new TimerTask() {
+					@Override
+					public void run() {
+						ufoOverlay.update();
+						tankOverlay.update();
+						itemOverlay.update();
+						mapView.postInvalidate();
+					}
+				}, 0, 33);
+			} catch (Exception e) {
+			}
 		}
-		
+
 		try {
 			locationManager.removeUpdates(locationPassiveListener);
 			locationManager.removeUpdates(locationListener);
 			locationManager.removeUpdates(locationCoarseListener);
 		} catch (Exception e) {
 		}
-		
+
 		passiveProvider = LocationManager.PASSIVE_PROVIDER;
-		locationManager.requestLocationUpdates(passiveProvider, 1000, 1f, locationPassiveListener);
-		
-		if (coarseProvider!=null && locationManager.isProviderEnabled(coarseProvider)) {
-			locationManager.requestLocationUpdates(coarseProvider, 1000, 1f, locationCoarseListener);
+		locationManager.requestLocationUpdates(passiveProvider, 1000, 1f,
+				locationPassiveListener);
+
+		if (coarseProvider != null
+				&& locationManager.isProviderEnabled(coarseProvider)) {
+			locationManager.requestLocationUpdates(coarseProvider, 1000, 1f,
+					locationCoarseListener);
 		}
-		
-		if (provider==null || !locationManager.isProviderEnabled(provider)) {
+
+		if (provider == null || !locationManager.isProviderEnabled(provider)) {
 			createGpsDisabledAlert();
 			return;
 		} else {
-			locationManager.requestLocationUpdates(provider, 1000, 1f, locationListener);
-		}		
+			locationManager.requestLocationUpdates(provider, 1000, 1f,
+					locationListener);
+		}
 
-		
-		if(!isOnline()) {
+		if (!isOnline()) {
 			createInternetAlert();
 			return;
 		}
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
-		
+
 		if (GameLogic.getInstance().isAnimation()) {
 			try {
 				animTimer.cancel();
 			} catch (Exception e) {
-			}			
+			}
 		}
-		
+
 		if (sersorrunning) {
 			sensorManager.unregisterListener(mySensorEventListener);
 		}
-		
+
 		try {
 			locationManager.removeUpdates(locationListener);
 			locationManager.removeUpdates(locationCoarseListener);
 		} catch (Exception e) {
-		}		
+		}
 	}
 
 	@Override
@@ -568,39 +617,51 @@ public class GameActivity extends MapActivity {
 	}
 
 	/**
-	 * uses current player location to place dots
-	 * uses a grid placed around the player and calculates from each gridpoint a route to the player
+	 * uses current player location to place dots uses a grid placed around the
+	 * player and calculates from each gridpoint a route to the player
 	 */
-	private void createDots() {
+	private boolean createDots() {
 		GeoPoint routePos;
 		GeoPoint nextPos;
 		GeoPoint prevPos;
 		boolean nextRoute = false;
 		int cntRoute = 1;
 		int radius = 15;
-		while (GameLogic.getInstance().getItems().size() <= GameLogic.getInstance().getMaxTargets()) {
-			radius = radius+10; 
+		while (GameLogic.getInstance().getItems().size() <= GameLogic
+				.getInstance().getMaxTargets()) {
+			radius = radius + 10;
 			for (int y = -radius; y <= radius; y = y + radius) {
 				for (int x = -radius; x <= radius; x = x + radius) {
-					if(locationFix.isInterrupted()) return;
+					if (locationFix.isInterrupted())
+						return false;
 					try {
 
-						double geoLat = theGame.getPlayer().getPosition().getLatitudeE6() + (x * theGame.getGameRadius());
-						double geoLng = theGame.getPlayer().getPosition().getLongitudeE6() + (y * theGame.getGameRadius());
+						double geoLat = theGame.getPlayer().getPosition()
+								.getLatitudeE6()
+								+ (x * theGame.getGameRadius());
+						double geoLng = theGame.getPlayer().getPosition()
+								.getLongitudeE6()
+								+ (y * theGame.getGameRadius());
 
 						// cals route from player to grid position
 						routePos = new GeoPoint((int) (geoLat), (int) (geoLng));
 
-						String pairs[] = GameActivity.getDirectionData(GameLogic.getInstance().getPlayer().getPosition().getLatitudeE6() / 1E6 + ","
-								+ GameLogic.getInstance().getPlayer().getPosition().getLongitudeE6() / 1E6,routePos.getLatitudeE6() / 1E6 + "," + routePos.getLongitudeE6() / 1E6);
+						String pairs[] = GameActivity
+								.getDirectionData(GameLogic.getInstance()
+										.getPlayer().getPosition(),routePos);
 						cntRoute = 1;
-						if(pairs.length<2) break;
+						if (pairs.length < 2)
+							break;
 						String[] nextlngLat = pairs[cntRoute].split(",");
 						String[] prevlngLat = pairs[cntRoute - 1].split(",");
 
-						nextPos = new GeoPoint((int) (Double.parseDouble(nextlngLat[1]) * 1E6), (int) (Double.parseDouble(nextlngLat[0]) * 1E6));
-						prevPos = new GeoPoint((int) (Double.parseDouble(prevlngLat[1]) * 1E6), (int) (Double.parseDouble(prevlngLat[0]) * 1E6));
-
+						nextPos = new GeoPoint(
+								(int) (Double.parseDouble(nextlngLat[1]) * 1E6),
+								(int) (Double.parseDouble(nextlngLat[0]) * 1E6));
+						prevPos = new GeoPoint(
+								(int) (Double.parseDouble(prevlngLat[1]) * 1E6),
+								(int) (Double.parseDouble(prevlngLat[0]) * 1E6));
+						
 						int l = 1;
 
 						while (cntRoute < pairs.length - 1) {
@@ -609,72 +670,141 @@ public class GameActivity extends MapActivity {
 								++cntRoute;
 								nextlngLat = pairs[cntRoute].split(",");
 								prevlngLat = pairs[cntRoute - 1].split(",");
-								nextPos = new GeoPoint((int) (Double.parseDouble(nextlngLat[1]) * 1E6), (int) (Double.parseDouble(nextlngLat[0]) * 1E6));
-								prevPos = new GeoPoint((int) (Double.parseDouble(prevlngLat[1]) * 1E6), (int) (Double.parseDouble(prevlngLat[0]) * 1E6));
+								nextPos = new GeoPoint(
+										(int) (Double
+												.parseDouble(nextlngLat[1]) * 1E6),
+										(int) (Double
+												.parseDouble(nextlngLat[0]) * 1E6));
+								prevPos = new GeoPoint(
+										(int) (Double
+												.parseDouble(prevlngLat[1]) * 1E6),
+										(int) (Double
+												.parseDouble(prevlngLat[0]) * 1E6));
 								nextRoute = false;
-								//Log.v("newRoute", " true ");
+								// Log.v("newRoute", " true ");
 							}
 
 							// interpolPos = prevPos + 100 * counter * ||nextPos
 							// -
 							// prevPos||
 							GeoPoint dotPos = nextPos;
-							int newLat = (int) (prevPos.getLatitudeE6() + (theGame.getItemPlacementDistance() * l
-									* (1 / Math.sqrt(Math.pow(nextPos.getLatitudeE6() - prevPos.getLatitudeE6(), 2) + Math.pow(nextPos.getLongitudeE6() - prevPos.getLongitudeE6(), 2))) * (nextPos
+							int newLat = (int) (prevPos.getLatitudeE6() + (theGame
+									.getItemPlacementDistance()
+									* l
+									* (1 / Math.sqrt(Math.pow(
+											nextPos.getLatitudeE6()
+													- prevPos.getLatitudeE6(),
+											2)
+											+ Math.pow(nextPos.getLongitudeE6()
+													- prevPos.getLongitudeE6(),
+													2))) * (nextPos
 									.getLatitudeE6() - prevPos.getLatitudeE6())));
-							int newLog = (int) (prevPos.getLongitudeE6() + (theGame.getItemPlacementDistance() * l
-									* (1 / Math.sqrt(Math.pow(nextPos.getLatitudeE6() - prevPos.getLatitudeE6(), 2) + Math.pow(nextPos.getLongitudeE6() - prevPos.getLongitudeE6(), 2))) * (nextPos
-									.getLongitudeE6() - prevPos.getLongitudeE6())));
+							int newLog = (int) (prevPos.getLongitudeE6() + (theGame
+									.getItemPlacementDistance()
+									* l
+									* (1 / Math.sqrt(Math.pow(
+											nextPos.getLatitudeE6()
+													- prevPos.getLatitudeE6(),
+											2)
+											+ Math.pow(nextPos.getLongitudeE6()
+													- prevPos.getLongitudeE6(),
+													2))) * (nextPos
+									.getLongitudeE6() - prevPos
+									.getLongitudeE6())));
 
-							//Log.v("newpos", newLat + " " + newLog);
+							// Log.v("newpos", newLat + " " + newLog);
 
 							// if( ||prevPos + 100 * counter * ||nextPos -
 							// prevPos|||| <||nextPos - prevPos|| )
 							if (Math.sqrt(Math.pow(
-									theGame.getItemRadius() * l
-											* (1 / Math.sqrt(Math.pow(nextPos.getLatitudeE6() - prevPos.getLatitudeE6(), 2) + Math.pow(nextPos.getLongitudeE6() - prevPos.getLongitudeE6(), 2)))
-											* (nextPos.getLatitudeE6() - prevPos.getLatitudeE6()), 2)
+									theGame.getItemRadius()
+											* l
+											* (1 / Math.sqrt(Math.pow(
+													nextPos.getLatitudeE6()
+															- prevPos
+																	.getLatitudeE6(),
+													2)
+													+ Math.pow(
+															nextPos.getLongitudeE6()
+																	- prevPos
+																			.getLongitudeE6(),
+															2)))
+											* (nextPos.getLatitudeE6() - prevPos
+													.getLatitudeE6()), 2)
 									+ Math.pow(
 											theGame.getItemRadius()
 													* l
-													* (1 / Math.sqrt(Math.pow(nextPos.getLatitudeE6() - prevPos.getLatitudeE6(), 2) + Math.pow(nextPos.getLongitudeE6() - prevPos.getLongitudeE6(), 2)))
-													* (nextPos.getLongitudeE6() - prevPos.getLongitudeE6()), 2)) < Math.sqrt(Math.pow(prevPos.getLatitudeE6() - nextPos.getLatitudeE6(), 2)
-									+ Math.pow(prevPos.getLongitudeE6() - nextPos.getLongitudeE6(), 2))) {
+													* (1 / Math.sqrt(Math.pow(
+															nextPos.getLatitudeE6()
+																	- prevPos
+																			.getLatitudeE6(),
+															2)
+															+ Math.pow(
+																	nextPos.getLongitudeE6()
+																			- prevPos
+																					.getLongitudeE6(),
+																	2)))
+													* (nextPos.getLongitudeE6() - prevPos
+															.getLongitudeE6()),
+											2)) < Math.sqrt(Math.pow(
+									prevPos.getLatitudeE6()
+											- nextPos.getLatitudeE6(), 2)
+									+ Math.pow(prevPos.getLongitudeE6()
+											- nextPos.getLongitudeE6(), 2))) {
 								++l;
 								dotPos = new GeoPoint(newLat, newLog);
 							} else {
 								nextRoute = true;
 							}
-							//Log.v("placeDot", dotPos.toString());
+							// Log.v("placeDot", dotPos.toString());
 
-							if(!this.isFinishing()) {
-								if (GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), routePos) > GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), dotPos) && GameLogic.CalculationByDistance(theGame.getPlayer().getPosition(), dotPos) > theGame.getItemRadius()+10) {
-									theGame.addItem(getApplicationContext(), locationManager, dotPos);
-								} 
+							if (!this.isFinishing()) {
+								if (GameLogic.CalculationByDistance(theGame
+										.getPlayer().getPosition(), routePos) > GameLogic
+										.CalculationByDistance(theGame
+												.getPlayer().getPosition(),
+												dotPos)
+										&& GameLogic.CalculationByDistance(
+												theGame.getPlayer()
+														.getPosition(), dotPos) > theGame
+												.getItemRadius() + 10) {
+									theGame.addItem(getApplicationContext(),
+											locationManager, dotPos);
+								}
 							}
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
+						return false;
 					}
 
 				}
 			}
 		}
+		return true;
 
 	}
 
 	/**
-	 * calls maps.google.com to get a from srcPlace to destPlace (both can be geopoints)
+	 * calls maps.google.com to get a from srcPlace to destPlace (both can be
+	 * geopoints)
+	 * 
 	 * @param srcPlace
 	 * @param destPlace
+	 * @deprecated
 	 * @return
 	 */
-	public static String[] getDirectionData(String srcPlace, String destPlace) {
+	public static String[] getDirectionData_(String srcPlace, String destPlace)
+			throws Exception {
 
 		srcPlace = java.net.URLEncoder.encode(srcPlace);
 		destPlace = java.net.URLEncoder.encode(destPlace);
 
-		String urlString = "http://maps.google.com/maps?f=d&hl=en&dirflg=w&saddr=" + srcPlace + "&daddr=" + destPlace + "&ie=UTF8&0&om=0&output=kml";
+		String urlString = "http://maps.google.com/maps?f=d&hl=en&dirflg=w&saddr="
+				+ srcPlace
+				+ "&daddr="
+				+ destPlace
+				+ "&ie=UTF8&0&om=0&output=kml";
 
 		Log.d("URL", urlString);
 		Document doc = null;
@@ -706,8 +836,34 @@ public class GameActivity extends MapActivity {
 			}
 		}
 		String[] tempContent = pathConent.split(" ");
-		
+
 		return tempContent;
+	}
+	
+	public static String[] getDirectionData(final GeoPoint start, final GeoPoint dest) {
+	    Parser parser;
+	    String jsonURL = "http://maps.google.com/maps/api/directions/json?";
+	    final StringBuffer sBuf = new StringBuffer(jsonURL);
+	    sBuf.append("origin=");
+	    sBuf.append(start.getLatitudeE6()/1E6);
+	    sBuf.append(',');
+	    sBuf.append(start.getLongitudeE6()/1E6);
+	    sBuf.append("&destination=");
+	    sBuf.append(dest.getLatitudeE6()/1E6);
+	    sBuf.append(',');
+	    sBuf.append(dest.getLongitudeE6()/1E6);
+	    sBuf.append("&sensor=true&mode=walking");
+	    parser = new GoogleParser(sBuf.toString());
+	    Route r =  parser.parse();
+	    r.getPoints();
+	    ArrayList<String> temp = new ArrayList<String>();
+	    
+	    for(GeoPoint point:r.getPoints()) {
+	    	temp.add(point.getLongitudeE6()/ 1E6 + "," + point.getLatitudeE6()/ 1E6);
+	    }
+	    Log.v("points", "" + temp.size());
+	    
+	    return temp.toArray(new String[temp.size()]);
 	}
 
 	/**
@@ -716,25 +872,28 @@ public class GameActivity extends MapActivity {
 	public void updateUI() {
 		if (theGame.isGameReady()) {
 			theGame.decreaseTime();
-			tv_time.setText(Math.round(theGame.getTimeLeft() / 60) + "min " + String.format("%02d", theGame.getTimeLeft() % 60) + "sec");
+			tv_time.setText(Math.round(theGame.getTimeLeft() / 60) + "min "
+					+ String.format("%02d", theGame.getTimeLeft() % 60) + "sec");
 			tv_points.setText("Points " + theGame.getPoints());
 			tv_wave.setText("Wave " + theGame.getWave());
 			mapView.postInvalidate();
 		}
 		if (theGame.isGameReady() && theGame.isGameOver()) {
 			theGame.shutdownGame();
-			Intent ScoreIntent = new Intent(getBaseContext(), de.swagner.homeinvasion.ScoreActivity.class);
+			Intent ScoreIntent = new Intent(getBaseContext(),
+					de.swagner.homeinvasion.ScoreActivity.class);
 			startActivity(ScoreIntent);
 			finish();
 		}
 		if (Debug.getInstance().getParsedMode()) {
-			setLocation(Debug.getInstance().getCurrentRecordedPosition().getLatitudeE6() / 1E6, Debug.getInstance().getCurrentRecordedPosition().getLongitudeE6() / 1E6);
+			setLocation(Debug.getInstance().getCurrentRecordedPosition()
+					.getLatitudeE6() / 1E6, Debug.getInstance()
+					.getCurrentRecordedPosition().getLongitudeE6() / 1E6);
 		}
 	}
 
 	/**
-	 * add tank to game
-	 * tank gets a random position around user
+	 * add tank to game tank gets a random position around user
 	 */
 	public void addTank() {
 		Double geoLat, geoLng;
@@ -746,42 +905,60 @@ public class GameActivity extends MapActivity {
 			int leftRight = (int) Math.floor((Math.random() * 2) + 1);
 			if (leftRight == 1) {
 				// left
-				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((-6 * theGame.getTankPlacementDistance())));
+				geoLat = (double) (theGame.getPlayer().getPosition()
+						.getLatitudeE6() + ((-6 * theGame
+						.getTankPlacementDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((rnd * theGame.getTankPlacementDistance())));
+				geoLng = (double) (theGame.getPlayer().getPosition()
+						.getLongitudeE6() + ((rnd * theGame
+						.getTankPlacementDistance())));
 			} else {
 				// right
-				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((6 * theGame.getTankPlacementDistance())));
+				geoLat = (double) (theGame.getPlayer().getPosition()
+						.getLatitudeE6() + ((6 * theGame
+						.getTankPlacementDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((rnd * theGame.getTankPlacementDistance())));
+				geoLng = (double) (theGame.getPlayer().getPosition()
+						.getLongitudeE6() + ((rnd * theGame
+						.getTankPlacementDistance())));
 			}
 		} else {
 			// top or down
 			int topDown = (int) Math.floor((Math.random() * 2) + 1);
 			if (topDown == 1) {
 				// top
-				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((6 * theGame.getTankPlacementDistance())));
+				geoLng = (double) (theGame.getPlayer().getPosition()
+						.getLongitudeE6() + ((6 * theGame
+						.getTankPlacementDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((rnd * theGame.getTankPlacementDistance())));
+				geoLat = (double) (theGame.getPlayer().getPosition()
+						.getLatitudeE6() + ((rnd * theGame
+						.getTankPlacementDistance())));
 			} else {
 				// down
-				geoLng = (double) (theGame.getPlayer().getPosition().getLongitudeE6() + ((-6 * theGame.getTankPlacementDistance())));
+				geoLng = (double) (theGame.getPlayer().getPosition()
+						.getLongitudeE6() + ((-6 * theGame
+						.getTankPlacementDistance())));
 				int rnd = (int) Math.floor((Math.random() * 6) + -6);
-				geoLat = (double) (theGame.getPlayer().getPosition().getLatitudeE6() + ((rnd * theGame.getTankPlacementDistance())));
+				geoLat = (double) (theGame.getPlayer().getPosition()
+						.getLatitudeE6() + ((rnd * theGame
+						.getTankPlacementDistance())));
 			}
 		}
 
 		GeoPoint point = new GeoPoint(geoLat.intValue(), geoLng.intValue());
-		GeoPoint nextPos =point;
+		GeoPoint nextPos = point;
 
 		try {
 			// search nearest street for this point
-			String pairs[] = GameActivity.getDirectionData(point.getLatitudeE6() / 1E6 + "," + point.getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayer().getPosition().getLatitudeE6() / 1E6 + ","
-					+ GameLogic.getInstance().getPlayer().getPosition().getLongitudeE6() / 1E6);
+			String pairs[] = GameActivity.getDirectionData(
+					point,GameLogic.getInstance().getPlayer().getPosition());
 
 			String[] nextlngLat = pairs[0].split(",");
 
-			nextPos = new GeoPoint((int) (Double.parseDouble(nextlngLat[1]) * 1E6), (int) (Double.parseDouble(nextlngLat[0]) * 1E6));
+			nextPos = new GeoPoint(
+					(int) (Double.parseDouble(nextlngLat[1]) * 1E6),
+					(int) (Double.parseDouble(nextlngLat[0]) * 1E6));
 		} catch (Exception e) {
 		}
 
@@ -813,7 +990,8 @@ public class GameActivity extends MapActivity {
 	 */
 	private ServiceConnection onService = new ServiceConnection() {
 		@Override
-		public void onServiceConnected(ComponentName className, IBinder rawBinder) {
+		public void onServiceConnected(ComponentName className,
+				IBinder rawBinder) {
 			gameService = ((GameService.LocalBinder) rawBinder).getService();
 		}
 
@@ -831,12 +1009,12 @@ public class GameActivity extends MapActivity {
 	 */
 	public void setLocation(double latitude, double longitude) {
 		if (Constants.debugMode) {
-		debugLocation = new Location(provider);
-		debugLocation.setTime(System.currentTimeMillis());
-		debugLocation.setLatitude(latitude);
-		debugLocation.setLongitude(longitude);
-		debugLocation.setAccuracy(1.0f);
-		locationManager.setTestProviderLocation(provider, debugLocation);
+			debugLocation = new Location(provider);
+			debugLocation.setTime(System.currentTimeMillis());
+			debugLocation.setLatitude(latitude);
+			debugLocation.setLongitude(longitude);
+			debugLocation.setAccuracy(1.0f);
+			locationManager.setTestProviderLocation(provider, debugLocation);
 		}
 	}
 
@@ -848,42 +1026,54 @@ public class GameActivity extends MapActivity {
 		if (!inDialog) {
 			inDialog = true;
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Really quit current game? All your progress will be lost").setCancelable(false).setPositiveButton("Quit", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					inDialog = false;
-					finish();
-				}
-			});
-			builder.setNegativeButton("Resume game", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					inDialog = false;
-				}
-			});
+			builder.setMessage(
+					"Really quit current game? All your progress will be lost")
+					.setCancelable(false)
+					.setPositiveButton("Quit",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									inDialog = false;
+									finish();
+								}
+							});
+			builder.setNegativeButton("Resume game",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							inDialog = false;
+						}
+					});
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
 	}
-	
+
 	/**
 	 * warning if GPS is disabled
 	 */
 	private void createGpsDisabledAlert() {
-		if(!inDialog) {
-			inDialog =true;
+		if (!inDialog) {
+			inDialog = true;
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Your GPS is disabled! Would you like to enable it?").setCancelable(false).setPositiveButton("Enable GPS", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					inDialog = false;
-					showGpsOptions();
-					finish();
-				}
-			});
-			builder.setNegativeButton("Do nothing", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					inDialog = false;
-					finish();
-				}
-			});
+			builder.setMessage(
+					"Your GPS is disabled! Would you like to enable it?")
+					.setCancelable(false)
+					.setPositiveButton("Enable GPS",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									inDialog = false;
+									showGpsOptions();
+									finish();
+								}
+							});
+			builder.setNegativeButton("Do nothing",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							inDialog = false;
+							finish();
+						}
+					});
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
@@ -893,21 +1083,23 @@ public class GameActivity extends MapActivity {
 	 * open location settings
 	 */
 	private void showGpsOptions() {
-		Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+		Intent gpsOptionsIntent = new Intent(
+				android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 		startActivity(gpsOptionsIntent);
 	}
-	
+
 	/**
 	 * checks if client is online
+	 * 
 	 * @return online status
 	 */
 	public boolean isOnline() {
-	    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-	    if (netInfo != null && netInfo.isConnected()) {
-	        return true;
-	    }
-	    return false;
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnected()) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -917,91 +1109,109 @@ public class GameActivity extends MapActivity {
 		if (!inDialog) {
 			inDialog = true;
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("No internet connection available").setCancelable(false).setPositiveButton("Enable Internet", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					inDialog = false;
-					showInternetOptions();
-					finish();
-				}
-			});
-			builder.setNegativeButton("Do nothing", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					inDialog = false;
-					finish();
-				}
-			});
+			builder.setMessage("No internet connection available")
+					.setCancelable(false)
+					.setPositiveButton("Enable Internet",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									inDialog = false;
+									showInternetOptions();
+									finish();
+								}
+							});
+			builder.setNegativeButton("Do nothing",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							inDialog = false;
+							finish();
+						}
+					});
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
 	}
-	
+
 	/**
 	 * open connection settings
 	 */
 	private void showInternetOptions() {
-		Intent internetOptionsIntent = new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS);
+		Intent internetOptionsIntent = new Intent(
+				android.provider.Settings.ACTION_WIRELESS_SETTINGS);
 		startActivity(internetOptionsIntent);
 	}
-	
-	/** Determines whether one Location reading is better than the current Location fix
-	  * @param location  The new Location that you want to evaluate
-	  * @param currentBestLocation  The current Location fix, to which you want to compare the new one
-	  */
-	protected boolean isBetterLocation(Location location, Location currentBestLocation) {
-	    if (location == null) {
-	        // a new null location is always bad
-	        return false;
-	    }
-		
-	    if (currentBestLocation == null) {
-	        // A new location is always better than no location
-	        return true;
-	    }
 
-	    // Check whether the new location fix is newer or older
-	    long timeDelta = location.getTime() - currentBestLocation.getTime();
-	    boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
-	    boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
-	    boolean isNewer = timeDelta > 0;
+	/**
+	 * Determines whether one Location reading is better than the current
+	 * Location fix
+	 * 
+	 * @param location
+	 *            The new Location that you want to evaluate
+	 * @param currentBestLocation
+	 *            The current Location fix, to which you want to compare the new
+	 *            one
+	 */
+	protected boolean isBetterLocation(Location location,
+			Location currentBestLocation) {
+		if (location == null) {
+			// a new null location is always bad
+			return false;
+		}
 
-	    // If it's been more than two minutes since the current location, use the new location
-	    // because the user has likely moved
-	    if (isSignificantlyNewer) {
-	        return true;
-	    // If the new location is more than two minutes older, it must be worse
-	    } else if (isSignificantlyOlder) {
-	        return false;
-	    }
+		if (currentBestLocation == null) {
+			// A new location is always better than no location
+			return true;
+		}
 
-	    // Check whether the new location fix is more or less accurate
-	    int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
-	    boolean isLessAccurate = accuracyDelta > 0;
-	    boolean isMoreAccurate = accuracyDelta < 0;
-	    boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+		// Check whether the new location fix is newer or older
+		long timeDelta = location.getTime() - currentBestLocation.getTime();
+		boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
+		boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
+		boolean isNewer = timeDelta > 0;
 
-	    // Check if the old and new location are from the same provider
-	    boolean isFromSameProvider = isSameProvider(location.getProvider(),
-	            currentBestLocation.getProvider());
+		// If it's been more than two minutes since the current location, use
+		// the new location
+		// because the user has likely moved
+		if (isSignificantlyNewer) {
+			return true;
+			// If the new location is more than two minutes older, it must be
+			// worse
+		} else if (isSignificantlyOlder) {
+			return false;
+		}
 
-	    // Determine location quality using a combination of timeliness and accuracy
-	    if (isMoreAccurate) {
-	        return true;
-	    } else if (isNewer && !isLessAccurate) {
-	        return true;
-	    } else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
-	        return true;
-	    } else if (isNewer && !isLessAccurate && !isMoreAccurate) {
-	    	return true;
-	    }
-	    return false;
+		// Check whether the new location fix is more or less accurate
+		int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation
+				.getAccuracy());
+		boolean isLessAccurate = accuracyDelta > 0;
+		boolean isMoreAccurate = accuracyDelta < 0;
+		boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+		// Check if the old and new location are from the same provider
+		boolean isFromSameProvider = isSameProvider(location.getProvider(),
+				currentBestLocation.getProvider());
+
+		// Determine location quality using a combination of timeliness and
+		// accuracy
+		if (isMoreAccurate) {
+			return true;
+		} else if (isNewer && !isLessAccurate) {
+			return true;
+		} else if (isNewer && !isSignificantlyLessAccurate
+				&& isFromSameProvider) {
+			return true;
+		} else if (isNewer && !isLessAccurate && !isMoreAccurate) {
+			return true;
+		}
+		return false;
 	}
 
 	/** Checks whether two providers are the same */
 	private boolean isSameProvider(String provider1, String provider2) {
-	    if (provider1 == null) {
-	      return provider2 == null;
-	    }
-	    return provider1.equals(provider2);
+		if (provider1 == null) {
+			return provider2 == null;
+		}
+		return provider1.equals(provider2);
 	}
 
 }

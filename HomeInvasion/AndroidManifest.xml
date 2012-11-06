@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="de.swagner.homeinvasion" android:versionCode="12"
-	android:versionName="HomeInvasion 0.21" android:installLocation="auto">
+	package="de.swagner.homeinvasion" android:versionCode="13"
+	android:versionName="HomeInvasion 0.22" android:installLocation="auto">
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:name="HomeInvasionApp">
 		<activity android:name=".MenuActivity" android:label="@string/app_name"

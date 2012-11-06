@@ -309,8 +309,7 @@ public class Tank {
 			setRouteCounter(1);
 			setCurrentRouteCounter(0);
 
-			pairs = GameActivity.getDirectionData(getPosition().getLatitudeE6() / 1E6 + "," + getPosition().getLongitudeE6() / 1E6, GameLogic.getInstance().getPlayer().getPosition().getLatitudeE6() / 1E6
-					+ "," + GameLogic.getInstance().getPlayer().getPosition().getLongitudeE6() / 1E6);
+			pairs = GameActivity.getDirectionData(getPosition(),GameLogic.getInstance().getPlayer().getPosition());
 
 			getRouteToPlayer().clear();
 			for (int i = 1; i < pairs.length; ++i) {
